@@ -1101,14 +1101,14 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     task_gloss = {
         "warn": "warn or alert people",
         "assist": "help the person",
-        "monitor": "observe the situation",
+        "monitor": "monitor (observe the situation)",
         "avoid": "avoid the area",
         "continue": "continue normally",
     }
     task_text = task_gloss.get(task_label, task_label)
     st.markdown(
         f"""
-The robot's task in this scene is to {important_auto(task_text)}.
+The robot's task in this scene is to {important_text(task_text, color=RED)}.
 
 The grey goal-path shows where the robot originally planned to go and how it originally planned to get there.
 Each robot shows a changed target place and route. Please evaluate each update from two perspectives:
