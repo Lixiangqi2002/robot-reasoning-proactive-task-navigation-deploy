@@ -81,6 +81,13 @@ LIKERT_POOR_GOOD = [
     "4 Good",
     "5 Very good",
 ]
+LIKERT_UNDER_OVER_REACT = [
+    "1 Strongly underreacts",
+    "2 Slightly underreacts",
+    "3 About right",
+    "4 Slightly overreacts",
+    "5 Strongly overreacts",
+]
 SCORE_1_TO_10 = [str(i) for i in range(1, 11)]
 
 GREEN = "#2fbf71"
@@ -1071,13 +1078,36 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                 option=option,
                 display_order=display_order,
             )
+            reaction_question = (
+                "How appropriate is the robot's reaction level for this scene? "
+                "Use underreacts if the robot should do more, and overreacts if the robot does too much."
+            )
+            reaction_answer = st.radio(
+                reaction_question,
+                LIKERT_UNDER_OVER_REACT,
+                index=None,
+                key=f"{trial_dir.name}_Q3_3_reaction_level_{option.label}",
+                horizontal=True,
+            )
+            add_rating_row(
+                rows,
+                participant_id=participant_id,
+                bundle_id=bundle_id,
+                trial_dir=trial_dir,
+                task_label=task_label,
+                question_id="Q3_3_reaction_level",
+                question_text=reaction_question,
+                option=option,
+                answer=reaction_answer,
+                display_order=display_order,
+            )
             add_score_question(
                 rows,
                 participant_id=participant_id,
                 bundle_id=bundle_id,
                 trial_dir=trial_dir,
                 task_label=task_label,
-                question_id="Q3_3_explanation_quality",
+                question_id="Q3_4_explanation_quality",
                 question_text="How clear and convincing is this robot's reasoning explanation? 1 means not clear or convincing, and 10 means very clear and convincing.",
                 option=option,
                 display_order=display_order,
@@ -1088,7 +1118,7 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                 bundle_id=bundle_id,
                 trial_dir=trial_dir,
                 task_label=task_label,
-                question_id="Q3_4_trust",
+                question_id="Q3_5_trust",
                 question_text="Based on this reasoning explanation, how much would you trust this robot's decision in this scene? 1 means not at all, and 10 means completely.",
                 option=option,
                 display_order=display_order,
