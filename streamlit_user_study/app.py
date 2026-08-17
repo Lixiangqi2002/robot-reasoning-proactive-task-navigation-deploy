@@ -299,6 +299,17 @@ def option_c_plain_text(body: dict[str, Any]) -> dict[str, str]:
 
 def option_d_plain_text(body: dict[str, Any]) -> dict[str, str]:
     task = display_value(body.get("selected_proactive_task", body.get("task", "")))
+    json_task_reason = clean_participant_text(body.get("task_reason", body.get("reasoning", "")))
+    json_nav_constraints = summarize_constraints(body.get("selected_navigation_constraints", body.get("nav_constraints", "")))
+    json_nav_reason = clean_participant_text(body.get("navigation_constraints_reason", body.get("path_constraints", "")))
+    if json_task_reason or json_nav_constraints or json_nav_reason:
+        return {
+            "task": task_plain_action(task),
+            "task_reason": json_task_reason,
+            "nav_constraints": json_nav_constraints,
+            "nav_reason": json_nav_reason,
+        }
+
     templates = {
         "warn": {
             "task": "warn",
@@ -333,15 +344,20 @@ def option_d_plain_text(body: dict[str, Any]) -> dict[str, str]:
     }
     return templates.get(task, {
         "task": task_plain_action(task),
-        "task_reason": clean_participant_text(body.get("task_reason", body.get("reasoning", ""))),
-        "nav_constraints": summarize_constraints(body.get("selected_navigation_constraints", body.get("nav_constraints", ""))),
-        "nav_reason": clean_participant_text(body.get("navigation_constraints_reason", body.get("path_constraints", ""))),
+        "task_reason": json_task_reason,
+        "nav_constraints": json_nav_constraints,
+        "nav_reason": json_nav_reason,
     })
 
 
 def movement_plan_sentence(nav_constraints: str, nav_reason: str) -> str:
-    action = str(nav_constraints or "").strip().rstrip(".")
-    result = str(nav_reason or "").strip().rstrip(".")
+    raw_action = str(nav_constraints or "").strip()
+    raw_result = str(nav_reason or "").strip()
+    if raw_action and not raw_result and (". " in raw_action or raw_action[:1].isupper()):
+        return raw_action.rstrip(".") + "."
+
+    action = raw_action.rstrip(".")
+    result = raw_result.rstrip(".")
     action_rewrites = {
         "Avoid the area where the object is being thrown": "avoid the area where the object is being thrown",
         "Avoid the path where the human is throwing the object": "avoid the path where the person is throwing the object",
