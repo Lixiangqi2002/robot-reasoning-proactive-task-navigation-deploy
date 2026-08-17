@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Navigate away from the throwing object.",
-      "selected_navigation_constraints": "Avoid the area where the object is being thrown.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the large box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the interaction as it is a throwing action."
+      "task_reason": "The robot should avoid the activity as it is a throwing action."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the path where the human is throwing the object.",
-      "selected_navigation_constraints": "Avoid the path where the human is throwing the object.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The human is throwing an object, which is likely a largebox based on the context. The robot should avoid the path to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the warn action by drawing attention to risk while preserving a safe buffer",
+      "selected_navigation_constraints": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the large box",
+      "selected_proactive_task": "warn",
+      "task_reason": "The person is throwing an object, which is a potential hazard to the robot."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

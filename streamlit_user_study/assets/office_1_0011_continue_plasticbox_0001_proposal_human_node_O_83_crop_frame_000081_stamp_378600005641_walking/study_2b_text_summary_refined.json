@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "The robot should navigate along the hallway, avoiding any sudden turns or obstacles.",
-      "selected_navigation_constraints": "The robot should maintain a safe distance from the human and avoid any obstacles in the hallway.",
-      "selected_proactive_task": "monitor",
-      "task_reason": "The robot should monitor the area to ensure safety and avoid any potential hazards."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the plastic box",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot is in a hallway with a person ahead, but there is no specific interaction or task to assist, warn, monitor, avoid, or continue."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the human and the object.",
-      "selected_navigation_constraints": "Avoid the human and the object.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human and the object to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the plastic box",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot should continue its current path as it is not interacting with any objects or humans."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

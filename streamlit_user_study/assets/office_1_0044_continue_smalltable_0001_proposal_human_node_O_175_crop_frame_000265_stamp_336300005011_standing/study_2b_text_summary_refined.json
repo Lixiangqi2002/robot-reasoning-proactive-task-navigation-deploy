@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.7,
-      "navigation_constraints_reason": "The robot should avoid any sudden changes in direction and maintain a consistent speed.",
-      "selected_navigation_constraints": "The robot should maintain a safe distance from the wall and the door, as well as avoid any potential hazards in the hallway.",
-      "selected_proactive_task": "monitor",
-      "task_reason": "The robot is positioned in a hallway, and there are no visible obstacles or specific tasks to assist with. The robot should be cautious and monitor the area for any changes in the environment."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the small table",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot is positioned in a hallway, and there are no visible obstacles or specific tasks to assist with. The robot should continue to its next destination."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Navigate around the human and the small table.",
-      "selected_navigation_constraints": "Avoid the human and the small table.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human and the small table to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the small table",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot should continue as there is no immediate interaction or task to perform."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

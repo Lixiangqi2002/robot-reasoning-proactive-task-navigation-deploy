@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Navigate around the human to avoid a collision.",
-      "selected_navigation_constraints": "Avoid the human to prevent a conflict.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the large box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The interaction type predicted is 'kicking,' which suggests a potential conflict with a human. The robot should avoid this interaction to prevent harm."
+      "task_reason": "The activity appears to be kicking, which suggests a potential conflict with a person. The robot should avoid this activity to prevent harm."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Maintain a safe distance from the human and the object.",
-      "selected_navigation_constraints": "Avoid the human and the object to prevent any potential harm.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the large box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The interaction type is a kick, which is a physical action that could potentially harm the human. The robot should avoid this interaction to ensure safety."
+      "task_reason": "The interaction type is a kick, which suggests a potential collision with the person. The robot should avoid the activity to prevent injury."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

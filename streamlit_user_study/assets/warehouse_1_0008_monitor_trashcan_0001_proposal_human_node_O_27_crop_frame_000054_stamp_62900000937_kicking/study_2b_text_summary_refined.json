@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Maintain a safe distance from the kicking area.",
-      "selected_navigation_constraints": "Avoid the area where the kicking is occurring.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the trash can, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the interaction as it is a kicking action."
+      "task_reason": "The robot should avoid the activity as it is a kicking action."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Maintain a safe distance from the human and the trashcan.",
-      "selected_navigation_constraints": "Avoid the human and the trashcan to prevent any potential conflict.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the trash can, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The interaction type predicted is 'kicking,' which suggests a potential conflict or aggressive action. The robot should avoid this interaction to prevent harm or damage."
+      "task_reason": "The activity appears to be kicking, which suggests a potential conflict or aggressive action. The robot should avoid this activity to ensure safety."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

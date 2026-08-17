@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "The robot should navigate around the person and the object to ensure safe assistance.",
-      "selected_navigation_constraints": "The robot should move towards the person and the object to provide support.",
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the large box slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
       "task_reason": "The robot should assist the person carrying the object."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "The robot should avoid moving directly in front of the human to prevent any potential collision.",
-      "selected_navigation_constraints": "The robot should navigate around the human to provide assistance without obstructing their path.",
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the large box slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The human is carrying a large box, which suggests they are likely moving it. The robot should assist to help the human with the box, as it is a common task in logistics and transportation."
+      "task_reason": "The robot should assist the person in carrying the object."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

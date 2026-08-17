@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Navigate around the area where the human is dropping the object.",
-      "selected_navigation_constraints": "Avoid the area where the human is dropping the object.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the monitor, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the area where the human is dropping the object, as it could cause damage or interfere with the human's task."
+      "task_reason": "The robot should avoid the area where the person is dropping the object."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "avoid the human and object",
-      "selected_navigation_constraints": "move away from the human and object",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the interaction as it is not assisting or monitoring the human, but is simply moving past them."
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the monitor slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the person in moving the chair."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

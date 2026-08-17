@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the human.",
-      "selected_navigation_constraints": "Avoid the human to prevent a collision.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the trash can",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot is not interacting with any specific object or person, and there is no available context to determine if it should assist, warn, monitor, avoid, or continue."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the human and the trashcan.",
-      "selected_navigation_constraints": "Avoid the human and the trashcan.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human and the trashcan to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the trash can",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot should continue its current path as there is no immediate interaction or task to perform."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

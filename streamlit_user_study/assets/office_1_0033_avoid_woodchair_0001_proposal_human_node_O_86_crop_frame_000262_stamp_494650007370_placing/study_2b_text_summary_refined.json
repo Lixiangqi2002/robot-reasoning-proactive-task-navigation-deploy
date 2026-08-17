@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the human.",
-      "selected_navigation_constraints": "Avoid the human to prevent a collision.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the wooden chair",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot is positioned in a space where it can assist or continue its task, but there is no specific object or task to interact with."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "The robot should navigate around the chair and the human to reach the chair.",
-      "selected_navigation_constraints": "The robot should move towards the chair to assist the human.",
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the wooden chair slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the human in moving the chair."
+      "task_reason": "The robot should assist the person in moving the chair."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

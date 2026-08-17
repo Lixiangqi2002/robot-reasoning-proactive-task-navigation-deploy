@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "Navigate around the person.",
-      "selected_navigation_constraints": "Avoid the area where the person is standing.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the area as it is not clear if the person is a potential obstacle or if there is a specific task to assist."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the clothes stand",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot is in a space with no visible obstacles or specific tasks to perform."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Navigate around the person and the clothesstand.",
-      "selected_navigation_constraints": "Avoid the area near the person and the clothesstand.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the area as it is near a person and there is a potential for interaction."
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the clothes stand slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot is positioned near a clothesstand and is likely to interact with it. The proximity suggests that the robot should assist in placing or retrieving items from the clothesstand."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

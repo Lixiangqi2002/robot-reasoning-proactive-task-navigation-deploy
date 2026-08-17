@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "The robot should not follow the path of the human or the object.",
-      "selected_navigation_constraints": "The robot should not move towards the human or the object being dropped.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the tripod, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the interaction as it is not assisting or monitoring the situation."
+      "task_reason": "The robot should avoid the person and object to prevent any potential collision."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "The robot should navigate around the human and the tripod to avoid any contact.",
-      "selected_navigation_constraints": "The robot should avoid the human and the object (tripod) to prevent any potential collision.",
+      "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
+      "selected_navigation_constraints": "Keep a conservative distance from the person and the tripod, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the interaction as it is not assisting or monitoring the human's action."
+      "task_reason": "The robot should avoid the person and object as they are in the way of the robot's path."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

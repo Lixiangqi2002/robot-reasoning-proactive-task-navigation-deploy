@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "The robot should navigate around the person lifting the object.",
-      "selected_navigation_constraints": "The robot should move towards the object being lifted.",
-      "selected_proactive_task": "lift",
-      "task_reason": "The robot should assist."
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the person lifting the object."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "The robot should navigate around the human and the object, avoiding any obstacles.",
-      "selected_navigation_constraints": "The robot should move towards the object and the human, ensuring they are in a safe distance.",
+      "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
+      "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the human in lifting the object."
+      "task_reason": "The robot should assist the person in lifting the object."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,

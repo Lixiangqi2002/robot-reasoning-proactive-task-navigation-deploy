@@ -2,17 +2,17 @@
   "conditions": {
     "b1_vlm_without_dsg": {
       "confidence_0_to_1": 0.8,
-      "navigation_constraints_reason": "The robot should not move towards the human or the object.",
-      "selected_navigation_constraints": "The robot should avoid moving towards the human and the object to prevent any potential collision.",
-      "selected_proactive_task": "monitor",
-      "task_reason": "The robot should monitor the area to ensure the safety of the human and the object."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the large box",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot should continue as there is no interaction with the person or any objects that require assistance."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
-      "navigation_constraints_reason": "Avoid the human and the object in the path.",
-      "selected_navigation_constraints": "Avoid the human and the object.",
-      "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the human and the object to prevent any potential collision."
+      "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
+      "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the large box",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot should continue as the activity type is standing and there are no specific tasks or obstacles to address."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
