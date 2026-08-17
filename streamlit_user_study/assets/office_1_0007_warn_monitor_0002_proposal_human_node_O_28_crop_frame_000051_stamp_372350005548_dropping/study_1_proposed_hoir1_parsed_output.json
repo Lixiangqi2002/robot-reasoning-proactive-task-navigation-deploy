@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[monitor_0002, 5]",
+  "hazard level": "5",
+  "hoi_type_override": "dropping",
+  "human": [
+    85,
+    65,
+    179,
+    283
+  ],
+  "human state": "strained",
+  "interaction_type_override": "dropping",
+  "need level": "5",
+  "object": [
+    133,
+    171,
+    169,
+    241
+  ],
+  "object class": "monitor_0002",
+  "object property": "unstable",
+  "risk level": "5",
+  "risk type": "local_hazard",
+  "verb class": "dropping"
+}

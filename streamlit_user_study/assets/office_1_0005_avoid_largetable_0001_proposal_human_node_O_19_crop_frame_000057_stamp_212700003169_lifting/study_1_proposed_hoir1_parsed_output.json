@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "upper_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "lifting",
+  "human": [
+    201,
+    1,
+    301,
+    233
+  ],
+  "human state": "normal",
+  "interaction_type_override": "lifting",
+  "need level": "3",
+  "object": [
+    186,
+    0,
+    279,
+    78
+  ],
+  "object class": "largetable_0001",
+  "object property": "heavy",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "lifting"
+}

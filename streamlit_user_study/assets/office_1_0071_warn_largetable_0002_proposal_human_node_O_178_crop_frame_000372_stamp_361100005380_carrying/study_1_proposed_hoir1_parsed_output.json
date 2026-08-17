@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "upper_body",
+  "candidate_id": "c0",
+  "danger object": "[chair, 3] or none",
+  "hazard level": "3",
+  "hoi_type_override": "carrying",
+  "human": [
+    37,
+    85,
+    105,
+    271
+  ],
+  "human state": "strained",
+  "interaction_type_override": "carrying",
+  "need level": "3",
+  "object": [
+    17,
+    11,
+    115,
+    125
+  ],
+  "object class": "chair",
+  "object property": "bulky",
+  "risk level": "2",
+  "risk type": "object_motion_risk",
+  "verb class": "carrying"
+}

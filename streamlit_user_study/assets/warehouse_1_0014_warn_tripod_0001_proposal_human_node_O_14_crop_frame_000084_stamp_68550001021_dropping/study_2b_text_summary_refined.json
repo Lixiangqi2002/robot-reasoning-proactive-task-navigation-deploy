@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "Navigate around the object to avoid it.",
+      "selected_navigation_constraints": "Avoid the area where the object is being dropped.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is not clear if the object is being dropped or if there is a risk of collision."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate away from the human and the object.",
+      "selected_navigation_constraints": "Avoid the human and the object to prevent any potential harm.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is predicted to be a 'dropping' action, which could potentially harm the human or the object."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it keeps the activity in view while giving the person and object normal space",
+      "selected_navigation_constraints": [
+        "Keep watching the activity while leaving normal space around the person"
+      ],
+      "selected_proactive_task": "monitor",
+      "task_reason": "The activity appears to be dropping a tripod. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 1.0,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this crowded warehouse area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "warn",
+      "task_reason": "The robot sees the person dropping a tripod, which may need attention for safety. The object may add some handling burden. Several other people are close by (5). The scene also suggests the person may need attention and the activity is close to the robot, so it gives a warning from a clear position."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

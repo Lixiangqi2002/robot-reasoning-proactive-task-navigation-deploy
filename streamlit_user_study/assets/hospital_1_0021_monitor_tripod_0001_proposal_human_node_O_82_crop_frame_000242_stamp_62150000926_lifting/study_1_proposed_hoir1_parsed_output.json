@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "unknown",
+  "candidate_id": "c0",
+  "danger object": "[tripod, 2]",
+  "hazard level": "2",
+  "hoi_type_override": "lifting",
+  "human": [
+    91,
+    43,
+    243,
+    267
+  ],
+  "human state": "distracted",
+  "interaction_type_override": "lifting",
+  "need level": "0",
+  "object": [
+    231,
+    173,
+    297,
+    247
+  ],
+  "object class": "tripod",
+  "object property": "unstable",
+  "risk level": "2",
+  "risk type": "object_motion_risk",
+  "verb class": "lifting"
+}

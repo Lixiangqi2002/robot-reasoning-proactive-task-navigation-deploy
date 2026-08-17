@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Maintain a safe distance from the area where the interaction is taking place.",
+      "selected_navigation_constraints": "Avoid the area where the interaction is taking place.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is a kicking action, which is not a safe or appropriate behavior."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate around the human and the suitcase.",
+      "selected_navigation_constraints": "Avoid the human and the suitcase.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as the human is kicking, which is a potentially dangerous action."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it stays clear of the activity area and leaves room around the person and object",
+      "selected_navigation_constraints": [
+        "Keep a conservative distance and route around the activity"
+      ],
+      "selected_proactive_task": "avoid",
+      "task_reason": "The activity appears to be kicking a suitcase. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.4,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this corridor-like office passage, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path.",
+      "selected_proactive_task": "monitor",
+      "task_reason": "The robot sees the person kicking a suitcase, which may need attention for safety. The object may add some handling burden. There is no clear sign that the person needs help and there is no close route issue, so it keeps watching instead of moving in or rerouting."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

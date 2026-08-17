@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.8,
+      "navigation_constraints_reason": "The robot should navigate along the hallway, avoiding any sudden turns or obstacles.",
+      "selected_navigation_constraints": "The robot should maintain a safe distance from the human and avoid any obstacles in the hallway.",
+      "selected_proactive_task": "monitor",
+      "task_reason": "The robot should monitor the area to ensure safety and avoid any potential hazards."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Avoid the human and the object.",
+      "selected_navigation_constraints": "Avoid the human and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the human and the object to prevent any potential collision."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it keeps the activity in view while giving the person and object normal space",
+      "selected_navigation_constraints": [
+        "Keep watching the activity while leaving normal space around the person"
+      ],
+      "selected_proactive_task": "monitor",
+      "task_reason": "The activity appears to be walking near a plastic box. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.55,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this open office area, the robot does not need to move in. Continue the current task by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "continue",
+      "task_reason": "The robot sees the person walking near a plastic box, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. Another person is close by. The robot is at a moderate distance from the person (2.6 m), so it continues while leaving space."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

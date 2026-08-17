@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "standing",
+  "human": [
+    71,
+    39,
+    147,
+    265
+  ],
+  "human state": "normal",
+  "interaction_type_override": "standing",
+  "need level": "0",
+  "object": [
+    163,
+    145,
+    215,
+    270
+  ],
+  "object class": "sm_plant",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "standing"
+}

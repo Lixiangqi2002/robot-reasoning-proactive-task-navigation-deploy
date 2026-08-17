@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "unknown",
+  "candidate_id": "c0",
+  "danger object": "trashcan",
+  "hazard level": "0",
+  "hoi_type_override": "carrying",
+  "human": [
+    193,
+    5,
+    301,
+    233
+  ],
+  "human state": "normal",
+  "interaction_type_override": "carrying",
+  "need level": "0",
+  "object": [
+    85,
+    81,
+    153,
+    177
+  ],
+  "object class": "trashcan",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "carrying"
+}

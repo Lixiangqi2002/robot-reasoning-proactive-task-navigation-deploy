@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate around the human to avoid a collision.",
+      "selected_navigation_constraints": "Avoid the human to prevent any potential conflict.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The interaction type predicted is 'kicking,' which suggests a potential conflict with the human. The robot should avoid this interaction to prevent harm."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Avoid the human and the object.",
+      "selected_navigation_constraints": "Avoid the human and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is a kicking action that could potentially harm the human."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it stays clear of the activity area and leaves room around the person and object",
+      "selected_navigation_constraints": [
+        "Keep a conservative distance and route around the activity"
+      ],
+      "selected_proactive_task": "avoid",
+      "task_reason": "The activity appears to be kicking a box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 1.0,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this crowded open office area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "warn",
+      "task_reason": "The robot sees the person kicking a box, which may need attention for safety. The object may add some handling burden. Several other people are close by (4). The scene also suggests the person may need attention and the robot is near the person (1.4 m), so it gives a warning from a clear position."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

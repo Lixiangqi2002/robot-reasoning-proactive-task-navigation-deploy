@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "unknown",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "carrying",
+  "human": [
+    81,
+    103,
+    153,
+    243
+  ],
+  "human state": "normal",
+  "interaction_type_override": "carrying",
+  "need level": "0",
+  "object": [
+    181,
+    33,
+    301,
+    275
+  ],
+  "object class": "sm_plant12",
+  "object property": "none",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "carrying"
+}

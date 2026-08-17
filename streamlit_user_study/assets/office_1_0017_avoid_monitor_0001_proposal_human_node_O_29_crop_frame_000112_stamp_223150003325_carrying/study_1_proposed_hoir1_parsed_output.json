@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "carrying",
+  "human": [
+    91,
+    1,
+    221,
+    235
+  ],
+  "human state": "normal",
+  "interaction_type_override": "carrying",
+  "need level": "0",
+  "object": [
+    84,
+    78,
+    121,
+    162
+  ],
+  "object class": "monitor",
+  "object property": "none",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "carrying"
+}

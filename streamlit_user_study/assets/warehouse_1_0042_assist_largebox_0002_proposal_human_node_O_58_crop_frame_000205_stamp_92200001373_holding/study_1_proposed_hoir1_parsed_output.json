@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "upper_body",
+  "candidate_id": "c0",
+  "danger object": "[largebox, 2]",
+  "hazard level": "2",
+  "hoi_type_override": "holding",
+  "human": [
+    94,
+    0,
+    168,
+    237
+  ],
+  "human state": "strained",
+  "interaction_type_override": "holding",
+  "need level": "3",
+  "object": [
+    125,
+    3,
+    226,
+    119
+  ],
+  "object class": "largebox",
+  "object property": "bulky",
+  "risk level": "2",
+  "risk type": "object_motion_risk",
+  "verb class": "holding"
+}

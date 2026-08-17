@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "lifting",
+  "human": [
+    115,
+    37,
+    215,
+    273
+  ],
+  "human state": "normal",
+  "interaction_type_override": "lifting",
+  "need level": "3",
+  "object": [
+    129,
+    189,
+    233,
+    255
+  ],
+  "object class": "plasticbox",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "lifting"
+}

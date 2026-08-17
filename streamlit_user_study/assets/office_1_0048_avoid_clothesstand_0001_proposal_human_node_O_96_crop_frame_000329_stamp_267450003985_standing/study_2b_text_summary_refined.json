@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.8,
+      "navigation_constraints_reason": "Navigate around the person.",
+      "selected_navigation_constraints": "Avoid the area where the person is standing.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the area as it is not clear if the person is a potential obstacle or if there is a specific task to assist."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate around the person and the clothesstand.",
+      "selected_navigation_constraints": "Avoid the area near the person and the clothesstand.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the area as it is near a person and there is a potential for interaction."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it keeps the activity in view while giving the person and object normal space",
+      "selected_navigation_constraints": [
+        "Keep watching the activity while leaving normal space around the person"
+      ],
+      "selected_proactive_task": "monitor",
+      "task_reason": "The activity appears to be standing near a clothes stand. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.6,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this open office area, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot sees the person standing near a clothes stand and checks whether its route would interfere. The object is bulky, which may make handling harder. The robot path is near the person (1.4 m). Two other people are close by. It keeps clear instead of passing through the activity."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

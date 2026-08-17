@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.8,
+      "navigation_constraints_reason": "The robot should avoid the humans and the object while moving towards the goal pose.",
+      "selected_navigation_constraints": "The robot should navigate around the humans and the object, ensuring it does not obstruct their path.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the humans in carrying the object."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "The robot should navigate around the room, avoiding obstacles and ensuring a safe path for the human.",
+      "selected_navigation_constraints": "The robot should move towards the human and the object to assist them in carrying it.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the human in carrying the object."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it approaches cautiously, stays available to help, and stops with a comfortable gap",
+      "selected_navigation_constraints": [
+        "Move closer carefully while leaving enough space for the person and object"
+      ],
+      "selected_proactive_task": "assist",
+      "task_reason": "The activity appears to be carrying a large table. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.75,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this corridor-like office passage, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot sees the person carrying a large table and checks whether its route would interfere. The object may be hard to handle. The robot path is very close to the person (1.1 m). It also comes close to the person's likely path (0.9 m). Another person is close by. It keeps clear instead of passing through the activity."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

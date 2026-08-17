@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Avoid the human.",
+      "selected_navigation_constraints": "Avoid the human to prevent a collision.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the human to prevent any potential collision."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.8,
+      "navigation_constraints_reason": "The robot should navigate around the chair and the human to reach the chair.",
+      "selected_navigation_constraints": "The robot should move towards the chair to assist the human.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the human in moving the chair."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it keeps the activity in view while giving the person and object normal space",
+      "selected_navigation_constraints": [
+        "Keep watching the activity while leaving normal space around the person"
+      ],
+      "selected_proactive_task": "monitor",
+      "task_reason": "The activity appears to be placing a wooden chair. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.6,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this crowded open office area, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot sees the person placing a wooden chair and checks whether its route would interfere. The object may add some handling burden. The robot path is near the person (2.1 m). Another person is close by. It keeps clear instead of passing through the activity."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

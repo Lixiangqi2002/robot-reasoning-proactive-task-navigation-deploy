@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "placing",
+  "human": [
+    41,
+    37,
+    149,
+    277
+  ],
+  "human state": "normal",
+  "interaction_type_override": "placing",
+  "need level": "0",
+  "object": [
+    149,
+    133,
+    173,
+    177
+  ],
+  "object class": "sm_trashcan_4",
+  "object property": "none",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "placing"
+}

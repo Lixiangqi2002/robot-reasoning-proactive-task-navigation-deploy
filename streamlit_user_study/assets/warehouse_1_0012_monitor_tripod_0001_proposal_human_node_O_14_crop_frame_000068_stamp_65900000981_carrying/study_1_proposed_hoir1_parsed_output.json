@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[tripod, 2]",
+  "hazard level": "2",
+  "hoi_type_override": "carrying",
+  "human": [
+    125,
+    13,
+    251,
+    281
+  ],
+  "human state": "normal",
+  "interaction_type_override": "carrying",
+  "need level": "0",
+  "object": [
+    101,
+    58,
+    220,
+    273
+  ],
+  "object class": "tripod",
+  "object property": "unstable",
+  "risk level": "2",
+  "risk type": "local_hazard",
+  "verb class": "carrying"
+}

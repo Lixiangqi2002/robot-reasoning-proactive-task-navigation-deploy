@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "unknown",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "standing",
+  "human": [
+    225,
+    3,
+    301,
+    257
+  ],
+  "human state": "normal",
+  "interaction_type_override": "standing",
+  "need level": "0",
+  "object": [
+    105,
+    161,
+    200,
+    285
+  ],
+  "object class": "laptop",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "standing"
+}

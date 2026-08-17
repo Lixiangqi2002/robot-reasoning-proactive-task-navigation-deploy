@@ -1,0 +1,30 @@
+{
+  "bbox-derived contact-region prior": "upper_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "holding",
+  "human": [
+    272,
+    0,
+    319,
+    237
+  ],
+  "human state": "normal",
+  "interaction_type": "holding",
+  "interaction_type_override": "holding",
+  "manual_review_interaction_type": "holding",
+  "manual_review_note": "Interaction type corrected from folder-level manual review for user-study stimulus consistency.",
+  "need level": "0",
+  "object": [
+    257,
+    0,
+    274,
+    21
+  ],
+  "object class": "tripod",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "holding"
+}

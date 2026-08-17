@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[box, 3] or none",
+  "hazard level": "3",
+  "hoi_type_override": "kicking",
+  "human": [
+    81,
+    33,
+    185,
+    271
+  ],
+  "human state": "normal",
+  "interaction_type_override": "kicking",
+  "need level": "0",
+  "object": [
+    113,
+    221,
+    187,
+    271
+  ],
+  "object class": "box",
+  "object property": "unstable",
+  "risk level": "2",
+  "risk type": "local_hazard",
+  "verb class": "kicking"
+}

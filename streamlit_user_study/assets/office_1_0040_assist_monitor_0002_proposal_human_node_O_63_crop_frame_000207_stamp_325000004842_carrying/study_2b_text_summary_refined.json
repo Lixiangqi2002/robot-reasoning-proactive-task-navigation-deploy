@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "The robot should navigate around the room to reach the human and the object.",
+      "selected_navigation_constraints": "The robot should move towards the human and the object to assist them.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the human in carrying the object."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "The robot should navigate around the room to reach the human and the object without obstructing their path.",
+      "selected_navigation_constraints": "The robot should move towards the human and the object to assist them in carrying it.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot should assist the human in carrying the object."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it approaches cautiously, stays available to help, and stops with a comfortable gap",
+      "selected_navigation_constraints": [
+        "Move closer carefully while leaving enough space for the person and object"
+      ],
+      "selected_proactive_task": "assist",
+      "task_reason": "The activity appears to be carrying a monitor. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.7,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this open office area, approach is reachable, but still needs care. Approach carefully by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path.",
+      "selected_proactive_task": "assist",
+      "task_reason": "The robot sees the person carrying a monitor, and the scene suggests the person may need help. The object may add some handling burden. The area is reachable, so it moves in to assist."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}

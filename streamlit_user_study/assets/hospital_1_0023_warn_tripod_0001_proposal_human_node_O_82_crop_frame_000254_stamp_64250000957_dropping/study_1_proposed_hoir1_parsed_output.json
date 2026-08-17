@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[tripod, 3] or none",
+  "hazard level": "3",
+  "hoi_type_override": "dropping",
+  "human": [
+    113,
+    45,
+    257,
+    265
+  ],
+  "human state": "strained",
+  "interaction_type_override": "dropping",
+  "need level": "3",
+  "object": [
+    29,
+    169,
+    249,
+    241
+  ],
+  "object class": "tripod",
+  "object property": "unstable",
+  "risk level": "3",
+  "risk type": "local_hazard",
+  "verb class": "dropping"
+}

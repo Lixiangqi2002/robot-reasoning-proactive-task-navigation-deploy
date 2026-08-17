@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[largebox, 5] or none",
+  "hazard level": "5",
+  "hoi_type_override": "throwing",
+  "human": [
+    31,
+    37,
+    177,
+    270
+  ],
+  "human state": "strained",
+  "interaction_type_override": "throwing",
+  "need level": "5",
+  "object": [
+    191,
+    121,
+    269,
+    205
+  ],
+  "object class": "largebox",
+  "object property": "unstable",
+  "risk level": "5",
+  "risk type": "local_hazard",
+  "verb class": "throwing"
+}

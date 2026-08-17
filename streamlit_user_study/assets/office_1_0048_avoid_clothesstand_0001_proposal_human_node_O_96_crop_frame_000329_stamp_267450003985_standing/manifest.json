@@ -1,0 +1,135 @@
+{
+  "choice": "use",
+  "event": "office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985",
+  "files": {
+    "source_direct_baselines_manifest": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_direct_baselines_manifest.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/direct_baselines/office_1-0000_1200_selected_bbox/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/direct_baselines_manifest.json"
+    },
+    "source_ours_grounded_constraints": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_ours_grounded_constraints.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/grounded_constraints.json"
+    },
+    "source_ours_task_objectives": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_ours_task_objectives.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/task_objectives.json"
+    },
+    "source_ours_trial": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_ours_trial.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/trial.json"
+    },
+    "source_selected_baselines_manifest": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_selected_baselines_manifest.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/selected_baselines/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_baselines_manifest.json"
+    },
+    "study_1_proposed_full_rgb": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_1_proposed_full_rgb.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/rgb.png"
+    },
+    "study_1_proposed_hoir1_crop": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_1_proposed_hoir1_crop.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/vlm_crop.png"
+    },
+    "study_1_proposed_hoir1_raw_output": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_1_proposed_hoir1_raw_output.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/hoir1_raw_output.json"
+    },
+    "study_2a_baseline_b1_pure_vlm_pair": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2a_baseline_b1_pure_vlm_pair.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/vlm_baseline_runs/office_1-0000_1200_selected_corrected/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/pair_b1.vlm_result.json"
+    },
+    "study_2a_baseline_b2_rule_proximity_pair": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2a_baseline_b2_rule_proximity_pair.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/direct_baselines/office_1-0000_1200_selected_bbox/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2a_b2_2d_proximity_pair.json"
+    },
+    "study_2a_baseline_b2_rule_proximity_pair_overlay": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2a_baseline_b2_rule_proximity_pair_overlay.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/direct_baselines/office_1-0000_1200_selected_bbox/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2a_b2_2d_proximity_pair.png"
+    },
+    "study_2a_proposed_dsg_pair_overlay": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2a_proposed_dsg_pair_overlay.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/selected_baselines/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2b_dsg_crop_overlay.png"
+    },
+    "study_2b_baseline_b1_vlm_no_dsg": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_baseline_b1_vlm_no_dsg.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/vlm_baseline_runs/office_1-0000_1200_selected_corrected/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/reasoning_b1.vlm_result.json"
+    },
+    "study_2b_baseline_b2_vlm_dsg_neural_only": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_baseline_b2_vlm_dsg_neural_only.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/vlm_baseline_runs/office_1-0000_1200_selected_corrected/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/reasoning_b2.vlm_result.json"
+    },
+    "study_2b_stimulus_b1_rgb_dsg_crop_overlay": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_stimulus_b1_rgb_dsg_crop_overlay.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/selected_baselines/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2b_dsg_crop_overlay.png"
+    },
+    "study_2b_stimulus_b2_rgb_lsg_bev_composite": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_stimulus_b2_rgb_lsg_bev_composite.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/selected_baselines/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2b_b2_overlay_lsg_bev.png"
+    },
+    "study_2c_baseline_b2_vlm_dsg_goal_pose": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2c_baseline_b2_vlm_dsg_goal_pose.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/vlm_baseline_runs/office_1-0000_1200_selected_corrected/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/goal_2c_b2.vlm_result.json"
+    },
+    "study_2c_stimulus_goal_reference_map": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2c_stimulus_goal_reference_map.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/full_gt_bev_nav_map.png"
+    },
+    "study_2c_stimulus_rgb_lsg_bev_composite": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2c_stimulus_rgb_lsg_bev_composite.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/selected_baselines/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study2b_b2_overlay_lsg_bev.png"
+    },
+    "study_3_baseline_b1_plain_global_costmap": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_baseline_b1_plain_global_costmap.json",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/direct_baselines/office_1-0000_1200_selected_bbox/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/plain_global_costmap.json"
+    },
+    "study_3_full_gt_bev_nav_map": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_full_gt_bev_nav_map.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/full_gt_bev_nav_map.png"
+    },
+    "study_3_proposed_goal_path_overlay": {
+      "exists": true,
+      "path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_proposed_goal_path_overlay.png",
+      "source": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/path_goal_projection.png"
+    }
+  },
+  "generated_json": {
+    "selection_record": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/selection_record.json",
+    "source_locations": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/source_locations.json",
+    "study_1_proposed_hoir1_parsed_output": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_1_proposed_hoir1_parsed_output.json",
+    "study_2a_proposed_dsg_pair": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2a_proposed_dsg_pair.json",
+    "study_2b_baseline_b3_rule_based": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_baseline_b3_rule_based.json",
+    "study_2b_proposed_nesy_reasoning": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2b_proposed_nesy_reasoning.json",
+    "study_2c_proposed_grounded_goal_pose": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_2c_proposed_grounded_goal_pose.json",
+    "study_3_baseline_b1_nav2_plain_costmap": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_baseline_b1_nav2_plain_costmap.json",
+    "study_3_baseline_b2_nav2_dsg_map_no_social_update": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_baseline_b2_nav2_dsg_map_no_social_update.json",
+    "study_3_proposed_dsg_social_constraints_path": "/mnt/data/selinaX/hunavsim_dataset/user_study_selected_data/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985/study_3_proposed_dsg_social_constraints_path.json"
+  },
+  "missing": [],
+  "object_label": "clothesstand_0001",
+  "scene_slug": "office_1-0000_1200",
+  "schema": "dsg_user_study_selected_event_package_v1",
+  "selection_json": "/home/selinaX/ros2_ws/src/dsg_user_study/config/selection/office_1-0000_1200_user_study_selection.json",
+  "source_trial_dir": "/home/selinaX/ros2_ws/output/dsg_user_study/ours_minimal_bag_all_scenes_full/office_1-0000_1200/office_1_0048_avoid_clothesstand_0001_proposal_human_node_O_96_crop_frame_000329_stamp_267450003985",
+  "task": "avoid"
+}

@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[sm_cardboxa, 2] or none",
+  "hazard level": "2",
+  "hoi_type_override": "kicking",
+  "human": [
+    109,
+    35,
+    190,
+    265
+  ],
+  "human state": "normal",
+  "interaction_type_override": "kicking",
+  "need level": "0",
+  "object": [
+    71,
+    225,
+    165,
+    273
+  ],
+  "object class": "sm_cardboxa",
+  "object property": "unstable",
+  "risk level": "2",
+  "risk type": "local_hazard",
+  "verb class": "kicking"
+}

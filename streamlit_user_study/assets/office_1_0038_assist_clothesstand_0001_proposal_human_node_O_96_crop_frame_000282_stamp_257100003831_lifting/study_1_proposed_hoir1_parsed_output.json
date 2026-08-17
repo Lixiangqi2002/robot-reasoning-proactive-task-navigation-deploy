@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "lower_body",
+  "candidate_id": "c0",
+  "danger object": "[wheelbarrow, 3] or none",
+  "hazard level": "3",
+  "hoi_type_override": "lifting",
+  "human": [
+    115,
+    59,
+    217,
+    251
+  ],
+  "human state": "strained",
+  "interaction_type_override": "lifting",
+  "need level": "3",
+  "object": [
+    31,
+    189,
+    281,
+    261
+  ],
+  "object class": "wheelbarrow",
+  "object property": "bulky",
+  "risk level": "2",
+  "risk type": "object_motion_risk",
+  "verb class": "lifting"
+}

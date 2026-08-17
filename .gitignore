@@ -1,0 +1,6 @@
+streamlit_user_study/.venv/
+streamlit_user_study/responses/
+.streamlit/
+mentor_preview_site/
+__pycache__/
+*.pyc

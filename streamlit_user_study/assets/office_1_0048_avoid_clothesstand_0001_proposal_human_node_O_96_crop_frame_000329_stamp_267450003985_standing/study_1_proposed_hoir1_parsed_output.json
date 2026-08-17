@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "unknown",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "standing",
+  "human": [
+    225,
+    113,
+    253,
+    190
+  ],
+  "human state": "normal",
+  "interaction_type_override": "standing",
+  "need level": "0",
+  "object": [
+    133,
+    61,
+    217,
+    193
+  ],
+  "object class": "clothesstand",
+  "object property": "none",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "standing"
+}

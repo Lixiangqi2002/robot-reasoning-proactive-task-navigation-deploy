@@ -1,0 +1,27 @@
+{
+  "bbox-derived contact-region prior": "upper_body",
+  "candidate_id": "c0",
+  "danger object": "none",
+  "hazard level": "0",
+  "hoi_type_override": "carrying",
+  "human": [
+    239,
+    41,
+    306,
+    279
+  ],
+  "human state": "normal",
+  "interaction_type_override": "carrying",
+  "need level": "0",
+  "object": [
+    191,
+    96,
+    245,
+    172
+  ],
+  "object class": "suitcase",
+  "object property": "unstable",
+  "risk level": "0",
+  "risk type": "none",
+  "verb class": "carrying"
+}

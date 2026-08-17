@@ -1,0 +1,35 @@
+{
+  "conditions": {
+    "b1_vlm_without_dsg": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate around the human to avoid the kicking action.",
+      "selected_navigation_constraints": "Avoid the area where the human is standing.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is a kicking action that could be harmful."
+    },
+    "b2_vlm_with_dsg_neural_only": {
+      "confidence_0_to_1": 0.9,
+      "navigation_constraints_reason": "Navigate away from the human and the object.",
+      "selected_navigation_constraints": "Avoid the human and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot should avoid the interaction as it is a kicking action."
+    },
+    "b3_rule_based": {
+      "confidence_0_to_1": 0.5,
+      "navigation_constraints_reason": "it stays clear of the activity area and leaves room around the person and object",
+      "selected_navigation_constraints": [
+        "Keep a conservative distance and route around the activity"
+      ],
+      "selected_proactive_task": "avoid",
+      "task_reason": "The activity appears to be kicking a plastic box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+    },
+    "proposed_vlm_dsg_nesy": {
+      "confidence_0_to_1": 0.75,
+      "navigation_constraints_reason": "",
+      "selected_navigation_constraints": "In this doorway/passage area, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
+      "selected_proactive_task": "avoid",
+      "task_reason": "The robot sees the person kicking a plastic box and checks whether its route would interfere. The object may add some handling burden. The robot path is very close to the person (1.2 m). It also comes close to the person's likely path (1.1 m). Another person is close by. It keeps clear instead of passing through the activity."
+    }
+  },
+  "schema": "dsg_user_study_study2b_text_summary_v1"
+}
