@@ -6,10 +6,9 @@ import html
 import json
 import os
 import random
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import streamlit as st
 from PIL import Image
@@ -123,8 +122,7 @@ DISPLAY_LABELS = {
 }
 
 
-@dataclass(frozen=True)
-class Option:
+class Option(NamedTuple):
     label: str
     method: str
     image_path: Path | None = None
