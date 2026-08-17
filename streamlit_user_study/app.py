@@ -99,14 +99,14 @@ ROBOT_ROUTE_COLORS = {
 }
 
 DISPLAY_LABELS = {
-    "local_hazard": "a local hazard in the scene",
-    "object_motion_risk": "risk from a moving or unstable object",
-    "collision_risk": "risk of collision",
-    "fall_risk": "risk of falling",
+    "local_hazard": "something nearby that may need attention",
+    "object_motion_risk": "a moving or unstable object",
+    "collision_risk": "possible contact with a person or object",
+    "fall_risk": "a possible fall or dropped object",
     "blocked_access": "blocked access or blocked movement",
-    "interaction_interruption": "risk of interrupting the person's activity",
-    "none": "no clear risk",
-    "unclear": "unclear risk",
+    "interaction_interruption": "possible interruption of the person's activity",
+    "none": "no clear concern",
+    "unclear": "unclear concern",
     "no_interaction": "no clear interaction",
     "upper_body": "upper-body contact or movement",
     "lower_body": "lower-body contact or movement",
@@ -116,16 +116,16 @@ DISPLAY_LABELS = {
     "notify_nearby_people": "warn nearby people if needed",
     "preserve_interaction_space": "avoid cutting through the person-object activity space",
     "preserve_human_path": "avoid blocking where the person may move",
-    "avoid_hazard_object": "stay clear of the potentially hazardous object",
-    "avoid_hazard_event": "stay clear of the hazardous activity area",
+    "avoid_hazard_object": "stay clear of the object that may need attention",
+    "avoid_hazard_event": "stay clear of the activity area",
     "increase human safety margin": "keep extra safety space around the person",
     "approach visibility continuity": "stay visible while approaching",
     "avoid near human": "avoid getting too close to people nearby",
     "notify nearby people": "warn nearby people if needed",
     "preserve interaction space": "avoid cutting through the person-object activity space",
     "preserve human path": "avoid blocking where the person may move",
-    "avoid hazard object": "stay clear of the potentially hazardous object",
-    "avoid hazard event": "stay clear of the hazardous activity area",
+    "avoid hazard object": "stay clear of the object that may need attention",
+    "avoid hazard event": "stay clear of the activity area",
 }
 
 
@@ -854,9 +854,9 @@ def render_study_1(trial_dir: Path, participant_id: str, bundle_id: str, task_la
         ("Q2_2_person_state", f"The robot says the person's state is: {important_auto(display_value(parsed.get('human state')))}. How reasonable is this?", LIKERT_AGREE),
         ("Q2_3_object_state", f"The robot says the object's state is: {important_auto(display_value(parsed.get('object property')))}. How reasonable is this?", LIKERT_AGREE),
         ("Q2_4_help_needed", f"The robot gives the help-needed score as: {score_text(parsed.get('need level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_5_risk_level", f"The robot gives the risk score as: {score_text(parsed.get('risk level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_6_hazard_level", f"The robot gives the hazard score as: {score_text(parsed.get('hazard level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_7_risk_type", f"The robot says the main type of risk is: {important_auto(display_value(parsed.get('risk type')))}. How reasonable is this?", LIKERT_AGREE),
+        ("Q2_5_attention_needed", f"The robot gives the attention-needed score as: {score_text(parsed.get('risk level', ''))}. Do you agree with this score?", LIKERT_AGREE),
+        ("Q2_6_concern", f"The robot gives the concern score as: {score_text(parsed.get('hazard level', ''))}. Do you agree with this score?", LIKERT_AGREE),
+        ("Q2_7_main_concern", f"The robot says the main thing to pay attention to is: {important_auto(display_value(parsed.get('risk type')))}. How reasonable is this?", LIKERT_AGREE),
         ("Q2_8_overall", "Overall, the robot understood this person-object situation well enough to decide what to do next.", LIKERT_AGREE),
     ]
     rows: list[dict[str, Any]] = []
