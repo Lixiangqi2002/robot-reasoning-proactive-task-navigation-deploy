@@ -1010,7 +1010,7 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     st.subheader("Overall Ranking")
     st.write(
         "First, compare all four robots. Rank them from best to worst based on the overall quality "
-        "of their action choice, action reason, movement plan, and movement-plan reason."
+        "of their action choice, action reason, and movement plan."
     )
     render_robot_summary_grid(display_options, option_bodies)
     ranking_answers = ranking_control(
