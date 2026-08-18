@@ -1108,12 +1108,11 @@ def add_score_question(
 
 
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
-    st.header("Q3: Robot Reasoning and Decision")
+    st.header("Q3: Robot Decision and Explanation")
     show_image(abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"), "Full scene")
     st.write(
-        "Each robot gives one possible interpretation and plan for the same scene. "
-        "Please judge how well each robot understands the scene, how good its chosen action is, "
-        "how clear its explanation is, and how much you would trust its decision."
+        "Each robot gives one possible response for the same scene. "
+        "First, judge the robot's action choice. Then, judge how well each robot explains a shared decision."
     )
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
@@ -1137,18 +1136,63 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         for label, method in method_order
     }
 
-    st.subheader("Overall Ranking")
+    st.subheader("Q3A: Which Robot Makes the Best Decision?")
     st.write(
-        "First, compare all four robots. Rank them from best to worst based on the overall quality "
-        "of their action choice, action reason, and movement plan."
+        "First, judge each robot's chosen action for this scene. "
+        "Focus on whether the robot reacts with the right strength and chooses a good action."
     )
-    render_robot_summary_grid(display_options, option_bodies)
-    ranking_answers = ranking_control(
-        f"{trial_dir.name}_Q3_0_overall_reasoning_rank",
-        "Rank the four robots by overall reasoning quality.",
+    for row_start in range(0, len(display_options), 2):
+        cols = st.columns(2)
+        for col, option in zip(cols, display_options[row_start:row_start + 2]):
+            body = option_bodies[option.label]
+            with col:
+                with st.container(border=True):
+                    st.subheader(f"Robot {option.label}")
+                    st.markdown(
+                        f"**Robot action:** {important_text(body['task'], color=RED)}",
+                        unsafe_allow_html=True,
+                    )
+                    reaction_question = (
+                        "How appropriate is the robot's reaction level for this scene? "
+                        "Use underreacts if the robot should do more, and overreacts if the robot does too much."
+                    )
+                    reaction_answer = st.radio(
+                        reaction_question,
+                        LIKERT_UNDER_OVER_REACT,
+                        index=None,
+                        key=f"{trial_dir.name}_Q3A_1_reaction_level_{option.label}",
+                        horizontal=True,
+                    )
+                    add_rating_row(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3A_1_reaction_level",
+                        question_text=reaction_question,
+                        option=option,
+                        answer=reaction_answer,
+                        display_order=display_order,
+                    )
+                    add_score_question(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3A_2_action_decision_quality",
+                        question_text="How good is this robot's chosen action for this scene? 1 means very poor, and 10 means excellent.",
+                        option=option,
+                        display_order=display_order,
+                    )
+
+    decision_ranking_answers = ranking_control(
+        f"{trial_dir.name}_Q3A_0_decision_quality_rank",
+        "Rank the four robots by overall decision quality.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the best reasoning quality for this scene.",
+        hint="Choose each robot once. Rank 1 means the best decision quality for this scene.",
     )
     rows.extend(
         response_rows(
@@ -1156,96 +1200,129 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q3_0_overall_reasoning_rank",
-            question_text="Rank the four robots by overall reasoning quality.",
-            answers=ranking_answers,
+            question_id="Q3A_0_decision_quality_rank",
+            question_text="Rank the four robots by overall decision quality.",
+            answers=decision_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
         )
     )
 
-    st.subheader("Single-Robot Evaluation")
-    for option in display_options:
-        body = option_bodies[option.label]
-        with st.container(border=True):
-            st.subheader(f"Robot {option.label}")
-            st.markdown(
-                f"""
-**Robot action:** {important_text(body['task'], color=RED)}
+    st.subheader("Q3B: Which Robot Gives the Best Explanation?")
+    proposed_body = option_bodies["D"]
+    proposed_movement = movement_plan_sentence(proposed_body["nav_constraints"], proposed_body["nav_reason"])
+    st.markdown(
+        f"""
+Now all robots are explaining the same robot decision:
 
-**Why this action:** {html.escape(body['task_reason'])}
+**Action:** {important_text(proposed_body['task'], color=RED)}
+
+**Movement Plan:** {html.escape(proposed_movement)}
+
+Please judge only the explanation quality, not whether you personally agree with the decision.
+""",
+        unsafe_allow_html=True,
+    )
+    for row_start in range(0, len(display_options), 2):
+        cols = st.columns(2)
+        for col, option in zip(cols, display_options[row_start:row_start + 2]):
+            body = option_bodies[option.label]
+            with col:
+                with st.container(border=True):
+                    st.subheader(f"Robot {option.label}")
+                    st.markdown(
+                        f"""
+**Explanation:** {html.escape(body['task_reason'])}
 
 **Movement Plan:** {html.escape(movement_plan_sentence(body['nav_constraints'], body['nav_reason']))}
 """,
-                unsafe_allow_html=True,
-            )
-            add_score_question(
-                rows,
-                participant_id=participant_id,
-                bundle_id=bundle_id,
-                trial_dir=trial_dir,
-                task_label=task_label,
-                question_id="Q3_1_scene_understanding",
-                question_text="How well does this robot understand what is happening in the scene? 1 means very poorly, and 10 means very well.",
-                option=option,
-                display_order=display_order,
-            )
-            add_score_question(
-                rows,
-                participant_id=participant_id,
-                bundle_id=bundle_id,
-                trial_dir=trial_dir,
-                task_label=task_label,
-                question_id="Q3_2_action_decision_quality",
-                question_text="How good is this robot's chosen action for this scene? 1 means very poor, and 10 means excellent.",
-                option=option,
-                display_order=display_order,
-            )
-            reaction_question = (
-                "How appropriate is the robot's reaction level for this scene? "
-                "Use underreacts if the robot should do more, and overreacts if the robot does too much."
-            )
-            reaction_answer = st.radio(
-                reaction_question,
-                LIKERT_UNDER_OVER_REACT,
-                index=None,
-                key=f"{trial_dir.name}_Q3_3_reaction_level_{option.label}",
-                horizontal=True,
-            )
-            add_rating_row(
-                rows,
-                participant_id=participant_id,
-                bundle_id=bundle_id,
-                trial_dir=trial_dir,
-                task_label=task_label,
-                question_id="Q3_3_reaction_level",
-                question_text=reaction_question,
-                option=option,
-                answer=reaction_answer,
-                display_order=display_order,
-            )
-            add_score_question(
-                rows,
-                participant_id=participant_id,
-                bundle_id=bundle_id,
-                trial_dir=trial_dir,
-                task_label=task_label,
-                question_id="Q3_4_explanation_quality",
-                question_text="How clear and convincing is this robot's reasoning explanation? 1 means not clear or convincing, and 10 means very clear and convincing.",
-                option=option,
-                display_order=display_order,
-            )
-            add_score_question(
-                rows,
-                participant_id=participant_id,
-                bundle_id=bundle_id,
-                trial_dir=trial_dir,
-                task_label=task_label,
-                question_id="Q3_5_trust",
-                question_text="Based on this reasoning explanation, how much would you trust this robot's decision in this scene? 1 means not at all, and 10 means completely.",
-                option=option,
-                display_order=display_order,
-            )
+                        unsafe_allow_html=True,
+                    )
+                    add_score_question(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3B_1_task_movement_plan_match",
+                        question_text="How well does this movement plan support the robot's task? 1 means not well at all, and 10 means extremely well.",
+                        option=option,
+                        display_order=display_order,
+                    )
+                    add_score_question(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3B_2_explanation_clarity",
+                        question_text="How clear is this explanation? 1 means not clear at all, and 10 means extremely clear.",
+                        option=option,
+                        display_order=display_order,
+                    )
+                    add_score_question(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3B_3_scene_information_use",
+                        question_text="How well does this explanation use the scene information? 1 means not well at all, and 10 means extremely well.",
+                        option=option,
+                        display_order=display_order,
+                    )
+                    add_score_question(
+                        rows,
+                        participant_id=participant_id,
+                        bundle_id=bundle_id,
+                        trial_dir=trial_dir,
+                        task_label=task_label,
+                        question_id="Q3B_4_trust",
+                        question_text="Based on this explanation, how much would you trust this robot's reasoning? 1 means not at all, and 10 means completely.",
+                        option=option,
+                        display_order=display_order,
+                    )
+
+    movement_ranking_answers = ranking_control(
+        f"{trial_dir.name}_Q3B_0_task_movement_plan_match_rank",
+        "Rank the four robots by task-movement plan matching quality.",
+        display_options,
+        card_label="Robot",
+        hint="Choose each robot once. Rank 1 means the best task-movement plan match for this scene.",
+    )
+    rows.extend(
+        response_rows(
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q3B_0_task_movement_plan_match_rank",
+            question_text="Rank the four robots by task-movement plan matching quality.",
+            answers=movement_ranking_answers,
+            option_methods={o.label: o.method for o in options},
+            display_order=display_order,
+        )
+    )
+    explanation_ranking_answers = ranking_control(
+        f"{trial_dir.name}_Q3B_0_explanation_quality_rank",
+        "Rank the four robots by explanation quality.",
+        display_options,
+        card_label="Robot",
+        hint="Choose each robot once. Rank 1 means the best explanation quality for this scene.",
+    )
+    rows.extend(
+        response_rows(
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q3B_0_explanation_quality_rank",
+            question_text="Rank the four robots by explanation quality.",
+            answers=explanation_ranking_answers,
+            option_methods={o.label: o.method for o in options},
+            display_order=display_order,
+        )
+    )
     return rows
 
 
