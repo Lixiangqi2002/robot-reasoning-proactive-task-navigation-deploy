@@ -863,16 +863,18 @@ def append_rows_to_supabase(rows: list[dict[str, Any]]) -> str | None:
     table_name = supabase_config.get("table", DEFAULT_SUPABASE_TABLE)
     endpoint = f"{supabase_url}/rest/v1/{table_name}"
     payload = json.dumps(rows).encode("utf-8")
+    headers = {
+        "apikey": str(supabase_key),
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal",
+    }
+    if not str(supabase_key).startswith("sb_"):
+        headers["Authorization"] = f"Bearer {supabase_key}"
     request = urllib.request.Request(
         endpoint,
         data=payload,
         method="POST",
-        headers={
-            "apikey": str(supabase_key),
-            "Authorization": f"Bearer {supabase_key}",
-            "Content-Type": "application/json",
-            "Prefer": "return=minimal",
-        },
+        headers=headers,
     )
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
