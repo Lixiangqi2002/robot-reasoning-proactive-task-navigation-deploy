@@ -21,7 +21,10 @@
         "Keep a conservative distance and route around the activity"
       ],
       "selected_proactive_task": "avoid",
-      "task_reason": "The activity appears to be kicking a suitcase. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+      "task_reason": "The activity appears to be kicking a suitcase. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The activity appears to involve kicking the suitcase. The robot treats the activity as worth observing, so it chooses to monitor.",
+      "q3b_movement_plan": "Keep the person and the suitcase in view from a normal passing distance, and continue moving only while the route remains clear. This supports the monitor action by watching the activity without interrupting it."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.4,

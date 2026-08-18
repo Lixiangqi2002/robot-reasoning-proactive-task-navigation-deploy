@@ -21,7 +21,10 @@
         "Move closer carefully while leaving enough space for the person and object"
       ],
       "selected_proactive_task": "assist",
-      "task_reason": "The activity appears to be lifting a tripod. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+      "task_reason": "The activity appears to be lifting a tripod. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The activity appears to involve lifting the tripod. The robot treats the activity as worth observing, so it chooses to monitor.",
+      "q3b_movement_plan": "Keep the person and the tripod in view from a normal passing distance, and continue moving only while the route remains clear. This supports the monitor action by watching the activity without interrupting it."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.4,

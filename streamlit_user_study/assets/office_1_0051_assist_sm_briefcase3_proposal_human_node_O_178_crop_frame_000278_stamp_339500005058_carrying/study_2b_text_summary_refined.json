@@ -21,7 +21,10 @@
         "Move closer carefully while leaving enough space for the person and object"
       ],
       "selected_proactive_task": "assist",
-      "task_reason": "The activity appears to be carrying a briefcase. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+      "task_reason": "The activity appears to be carrying a briefcase. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The activity appears to involve carrying the briefcase. The robot treats this activity is potentially help-needed, so it chooses to assist.",
+      "q3b_movement_plan": "Approach the person and the briefcase slowly, stop at a comfortable helping distance, and keep enough space for the person to move. This supports the assist action by making the robot available without crowding the activity."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.6,

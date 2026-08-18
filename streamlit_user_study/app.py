@@ -1046,6 +1046,18 @@ def study_2b_body(summary: dict[str, Any], method: str) -> dict[str, str]:
     }
 
 
+def study_2b_q3b_body(summary: dict[str, Any], method: str) -> dict[str, str]:
+    body = summary.get(method, {})
+    if method == "b3_rule_based" and any(key in body for key in ("q3b_task_reason", "q3b_movement_plan")):
+        return {
+            "task": task_plain_action(display_value(body.get("q3b_selected_proactive_task", body.get("selected_proactive_task", "")))),
+            "task_reason": clean_participant_text(body.get("q3b_task_reason", "")),
+            "nav_constraints": clean_participant_text(body.get("q3b_movement_plan", "")),
+            "nav_reason": "",
+        }
+    return study_2b_body(summary, method)
+
+
 def add_rating_row(
     rows: list[dict[str, Any]],
     *,
@@ -1226,7 +1238,7 @@ Please judge only the explanation quality, not whether you personally agree with
     for row_start in range(0, len(display_options), 2):
         cols = st.columns(2)
         for col, option in zip(cols, display_options[row_start:row_start + 2]):
-            body = option_bodies[option.label]
+            body = study_2b_q3b_body(summary, option.method)
             with col:
                 with st.container(border=True):
                     st.subheader(f"Robot {option.label}")

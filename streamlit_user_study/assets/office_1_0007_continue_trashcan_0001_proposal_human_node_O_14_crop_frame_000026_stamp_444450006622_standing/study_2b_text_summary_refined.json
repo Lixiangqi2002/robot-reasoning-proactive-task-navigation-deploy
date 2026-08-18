@@ -21,7 +21,10 @@
         "Keep watching the activity while leaving normal space around the person"
       ],
       "selected_proactive_task": "monitor",
-      "task_reason": "The activity appears to be standing near a trash can. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+      "task_reason": "The activity appears to be standing near a trash can. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The activity appears to involve standing the trash can. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
+      "q3b_movement_plan": "Continue the current route while maintaining normal clearance from the person and the trash can. This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.65,

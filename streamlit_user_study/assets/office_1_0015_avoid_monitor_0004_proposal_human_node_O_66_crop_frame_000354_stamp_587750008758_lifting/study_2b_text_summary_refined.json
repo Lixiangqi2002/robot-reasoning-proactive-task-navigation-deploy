@@ -21,7 +21,10 @@
         "Move closer carefully while leaving enough space for the person and object"
       ],
       "selected_proactive_task": "assist",
-      "task_reason": "The activity appears to be lifting a monitor. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+      "task_reason": "The activity appears to be lifting a monitor. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The activity appears to involve lifting the monitor. The robot treats this area as something to give extra room, so it chooses to avoid.",
+      "q3b_movement_plan": "Keep a conservative distance from the person and the monitor, then route around the activity with a clear buffer. This supports the avoid action by keeping the robot out of the area where the activity could affect its path."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.6,

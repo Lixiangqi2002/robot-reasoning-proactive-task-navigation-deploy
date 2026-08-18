@@ -21,7 +21,10 @@
         "Keep a conservative distance and route around the activity"
       ],
       "selected_proactive_task": "avoid",
-      "task_reason": "The activity appears to be kicking a monitor. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+      "task_reason": "The activity appears to be kicking a monitor. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The activity appears to involve kicking the monitor. The robot treats the activity as needing caution, so it chooses to warn.",
+      "q3b_movement_plan": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the monitor. This supports the warn action by drawing attention to risk while preserving a safe buffer."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 1.0,

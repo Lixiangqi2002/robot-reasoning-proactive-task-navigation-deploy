@@ -21,7 +21,10 @@
         "Keep a conservative distance and route around the activity"
       ],
       "selected_proactive_task": "avoid",
-      "task_reason": "The activity appears to be kicking a box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid."
+      "task_reason": "The activity appears to be kicking a box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The activity appears to involve kicking the large box. The robot treats this area as something to give extra room, so it chooses to avoid.",
+      "q3b_movement_plan": "Keep a conservative distance from the person and the large box, then route around the activity with a clear buffer. This supports the avoid action by keeping the robot out of the area where the activity could affect its path."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.75,

@@ -21,7 +21,10 @@
         "Move closer carefully while leaving enough space for the person and object"
       ],
       "selected_proactive_task": "assist",
-      "task_reason": "The activity appears to be carrying a small box. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist."
+      "task_reason": "The activity appears to be carrying a small box. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The activity appears to involve carrying the small box. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
+      "q3b_movement_plan": "Continue the current route while maintaining normal clearance from the person and the small box. This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.55,

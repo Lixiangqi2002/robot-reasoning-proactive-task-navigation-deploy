@@ -21,7 +21,10 @@
         "Keep watching the activity while leaving normal space around the person"
       ],
       "selected_proactive_task": "monitor",
-      "task_reason": "The activity appears to be dropping a tripod. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor."
+      "task_reason": "The activity appears to be dropping a tripod. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The activity appears to involve dropping the tripod. The robot treats the activity as needing caution, so it chooses to warn.",
+      "q3b_movement_plan": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the tripod. This supports the warn action by drawing attention to risk while preserving a safe buffer."
     },
     "proposed_vlm_dsg_nesy": {
       "confidence_0_to_1": 0.62,
