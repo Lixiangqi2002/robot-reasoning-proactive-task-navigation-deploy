@@ -52,11 +52,28 @@ Optional query parameters:
 ?trial_ids=trial_dir_name_1,trial_dir_name_2
 ```
 
-Responses are saved to Google Sheets when Streamlit secrets contain a
-`[responses]` section with a `spreadsheet_id`. If Google Sheets is not
-configured, responses fall back to a local CSV:
+Responses are saved to Supabase when Streamlit secrets contain a `[supabase]`
+section. If Supabase is not configured, the app falls back to Google Sheets when
+`[responses]` is configured. If neither cloud backend is configured, responses
+fall back to a local CSV:
 
 `streamlit_user_study/responses/user_study_responses.csv`
+
+### Supabase response storage
+
+Recommended setup for Streamlit Community Cloud:
+
+1. In Supabase, open the SQL Editor and run
+   `streamlit_user_study/supabase_schema.sql`.
+2. In Supabase, open `Project Settings -> API`.
+3. Copy the project URL and a key. For this server-side Streamlit app, the
+   `service_role` key is simplest; an `anon` key also works if the table has a
+   Row Level Security insert policy.
+4. In Streamlit Cloud, open the app settings, go to `Secrets`, and paste a
+   `[supabase]` block using `streamlit_user_study/secrets.example.toml` as the
+   template.
+
+Do not commit real Supabase keys to GitHub.
 
 ### Google Sheets response storage
 

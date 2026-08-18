@@ -6,6 +6,8 @@ import html
 import json
 import os
 import random
+import urllib.error
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, NamedTuple
@@ -33,6 +35,7 @@ GOOGLE_SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive",
 ]
+DEFAULT_SUPABASE_TABLE = "user_study_responses"
 
 RANDOMIZE_OPTION_ORDER = os.environ.get("DSG_RANDOMIZE_OPTION_ORDER", "1") != "0"
 
@@ -777,7 +780,7 @@ def response_rows(
                 "question_text": question_text,
                 "option_label": option_label,
                 "method": (option_methods or {}).get(option_label, ""),
-                "display_order": (display_order or {}).get(option_label, ""),
+                "display_order": (display_order or {}).get(option_label),
                 "rating": rating_value(answer_label),
                 "rating_label": answer_label or "",
             }
@@ -850,6 +853,39 @@ def append_rows_to_google_sheet(rows: list[dict[str, Any]]) -> str | None:
     return f"Google Sheet worksheet '{worksheet_name}'"
 
 
+def append_rows_to_supabase(rows: list[dict[str, Any]]) -> str | None:
+    supabase_config = secrets_section("supabase")
+    supabase_url = str(supabase_config.get("url", "")).rstrip("/")
+    supabase_key = supabase_config.get("key") or supabase_config.get("service_role_key") or supabase_config.get("anon_key")
+    if not supabase_url or not supabase_key:
+        return None
+
+    table_name = supabase_config.get("table", DEFAULT_SUPABASE_TABLE)
+    endpoint = f"{supabase_url}/rest/v1/{table_name}"
+    payload = json.dumps(rows).encode("utf-8")
+    request = urllib.request.Request(
+        endpoint,
+        data=payload,
+        method="POST",
+        headers={
+            "apikey": str(supabase_key),
+            "Authorization": f"Bearer {supabase_key}",
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            if response.status >= 400:
+                raise RuntimeError(f"Supabase returned HTTP {response.status}")
+    except urllib.error.HTTPError as exc:
+        details = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Supabase insert failed: HTTP {exc.code}: {details}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"Supabase insert failed: {exc.reason}") from exc
+    return f"Supabase table '{table_name}'"
+
+
 def append_rows_to_csv(rows: list[dict[str, Any]]) -> str:
     if not rows:
         return "no rows"
@@ -883,6 +919,9 @@ def append_rows_to_csv(rows: list[dict[str, Any]]) -> str:
 
 
 def append_rows(rows: list[dict[str, Any]]) -> str:
+    saved_to = append_rows_to_supabase(rows)
+    if saved_to:
+        return saved_to
     saved_to = append_rows_to_google_sheet(rows)
     if saved_to:
         return saved_to
