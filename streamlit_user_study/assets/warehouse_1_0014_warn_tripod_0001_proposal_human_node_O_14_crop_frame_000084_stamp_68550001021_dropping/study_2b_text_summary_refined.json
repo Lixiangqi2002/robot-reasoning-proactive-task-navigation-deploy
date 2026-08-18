@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the tripod, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the area where the object is being dropped."
+      "task_reason": "The robot should avoid the area where the object is being dropped.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The situation centers on a person dropping the tripod in the warehouse aisle; so alerting the person helps avoid a surprise around the activity.",
+      "q3b_movement_plan": "Approach only enough to be noticed, then keep clear of the person and object. This supports warning without crowding the scene."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the tripod, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the person and object to prevent any potential collision."
+      "task_reason": "The robot should avoid the person and object to prevent any potential collision.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The action with a tripod near the cart could surprise nearby traffic, making warn more appropriate than assist, monitor, avoid, or continue.",
+      "q3b_movement_plan": "The robot should move to a position where it can clearly see the tripod and the person, then issue a warning to the person to stay clear of the tripod."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "monitor",
       "task_reason": "The activity appears to be dropping a tripod. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
       "q3b_selected_proactive_task": "warn",
-      "q3b_task_reason": "The activity appears to involve dropping the tripod. The robot treats the activity as needing caution, so it chooses to warn.",
+      "q3b_task_reason": "The activity appears to involve dropping. The robot treats the activity as needing caution, so it chooses to warn.",
       "q3b_movement_plan": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the tripod. This supports the warn action by drawing attention to risk while preserving a safe buffer."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this crowded warehouse area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "warn",
-      "task_reason": "The robot sees the person dropping a tripod, which may need attention for safety. The object may add some handling burden. Several other people are close by (5). The scene also suggests the person may need attention and the activity is close to the robot, so it gives a warning from a clear position."
+      "task_reason": "The robot sees the person dropping a tripod, which may need attention for safety. The object may add some handling burden. The image shows a crowded warehouse area with forklifts, carts, pallets, and several people in view. Five other people are nearby (nearest one about 1.3 m from the target person). The scene also suggests the person may need attention and the activity is close to the robot, so it gives a warning from a clear position.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The robot sees the person dropping a tripod, which may need attention for safety. The object may add some handling burden. The image shows a crowded warehouse area with forklifts, carts, pallets, and several people in view. Five other people are nearby (nearest one about 1.3 m from the target person). The scene also suggests the person may need attention and the activity is close to the robot, so it gives a warning from a clear position.",
+      "q3b_movement_plan": "In this crowded warehouse area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

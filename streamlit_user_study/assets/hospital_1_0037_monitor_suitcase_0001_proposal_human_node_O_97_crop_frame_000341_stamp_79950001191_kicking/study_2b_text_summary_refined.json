@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the suitcase, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the person as they are engaged in a potentially dangerous activity (kicking)."
+      "task_reason": "The robot should avoid the person as they are engaged in a potentially dangerous activity (kicking).",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The robot sees a person kicking the suitcase in the hospital space; so the robot can stay aware while the activity is still unfolding.",
+      "q3b_movement_plan": "Hold a clear viewing angle on the person and object while leaving the route open. This supports monitoring without stepping into the activity."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the suitcase, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The activity appears to be kicking, which suggests a potential conflict or aggressive action. The robot should avoid this activity to ensure safety."
+      "task_reason": "The activity appears to be kicking, which suggests a potential conflict or aggressive action. The robot should avoid this activity to ensure safety.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The person is kicking a suitcase near the desk, making the activity worth attention without clearly calling for help, a warning, avoidance, or simply continuing.",
+      "q3b_movement_plan": "The robot should maintain a safe distance from the person and their suitcase, ensuring the person's path is clear and interaction space is preserved."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "avoid",
       "task_reason": "The activity appears to be kicking a suitcase. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
       "q3b_selected_proactive_task": "monitor",
-      "q3b_task_reason": "The activity appears to involve kicking the suitcase. The robot treats the activity as worth observing, so it chooses to monitor.",
+      "q3b_task_reason": "The activity appears to involve kicking. The robot treats the activity as worth observing, so it chooses to monitor.",
       "q3b_movement_plan": "Keep the person and the suitcase in view from a normal passing distance, and continue moving only while the route remains clear. This supports the monitor action by watching the activity without interrupting it."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open hospital room, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path.",
       "selected_proactive_task": "monitor",
-      "task_reason": "The robot sees the person kicking a suitcase, which may need attention for safety. The object may add some handling burden. The robot is near the person (2.4 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting."
+      "task_reason": "The robot sees the person kicking a suitcase, which may need attention for safety. The object may add some handling burden. The image shows an open hospital room with a doorway, carts, and bins in the background. The robot is near the person (2.4 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The robot sees the person kicking a suitcase, which may need attention for safety. The object may add some handling burden. The image shows an open hospital room with a doorway, carts, and bins in the background. The robot is near the person (2.4 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting.",
+      "q3b_movement_plan": "In this open hospital room, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the clothes stand",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot is in a space with no visible obstacles or specific tasks to perform."
+      "task_reason": "The robot is in a space with no visible obstacles or specific tasks to perform.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The robot sees a person standing near the clothes stand in the office area; so steering around the person and object is the safer response.",
+      "q3b_movement_plan": "Route around the person and object instead of passing through the interaction. This keeps the robot out of the person's way."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the clothes stand slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot is positioned near a clothesstand and is likely to interact with it. The proximity suggests that the robot should assist in placing or retrieving items from the clothesstand."
+      "task_reason": "The robot is positioned near a clothesstand and is likely to interact with it. The proximity suggests that the robot should assist in placing or retrieving items from the clothesstand.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The person is standing near a clothes stand near the door, making the shared space uncertain enough that avoidance is safer than helping, warning, watching, or continuing through it.",
+      "q3b_movement_plan": "The robot should move away from the person and the clothes stand, maintaining a safe distance to avoid any risks."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "monitor",
       "task_reason": "The activity appears to be standing near a clothes stand. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
       "q3b_selected_proactive_task": "avoid",
-      "q3b_task_reason": "The activity appears to involve standing the clothes stand. The robot treats this area as something to give extra room, so it chooses to avoid.",
+      "q3b_task_reason": "The activity appears to involve standing. The robot treats this area as something to give extra room, so it chooses to avoid.",
       "q3b_movement_plan": "Keep a conservative distance from the person and the clothes stand, then route around the activity with a clear buffer. This supports the avoid action by keeping the robot out of the area where the activity could affect its path."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot sees the person standing near a clothes stand and checks whether its route would interfere. The object is bulky, which may make handling harder. The robot path is near the person (1.4 m). Two other people are close by. It keeps clear instead of passing through the activity."
+      "task_reason": "The robot sees the person standing near a clothes stand and checks whether its route would interfere. The object is bulky, which may make handling harder. The image shows an open office area near stairs, glass barriers, and a wide lobby floor. Two other people are also nearby (nearest one about 3.3 m from the target person). The robot future path is near the person (1.4 m). It keeps clear instead of passing through the activity.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The robot sees the person standing near a clothes stand and checks whether its route would interfere. The object is bulky, which may make handling harder. The image shows an open office area near stairs, glass barriers, and a wide lobby floor. Two other people are also nearby (nearest one about 3.3 m from the target person). The robot future path is near the person (1.4 m). It keeps clear instead of passing through the activity.",
+      "q3b_movement_plan": "In this open office area, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

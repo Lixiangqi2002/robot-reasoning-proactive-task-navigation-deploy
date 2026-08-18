@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the large box",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot should continue as there is no interaction with the person or any objects that require assistance."
+      "task_reason": "The robot should continue as there is no interaction with the person or any objects that require assistance.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The situation centers on a person standing near the large box in the office area; so proceeding carefully is reasonable while preserving clearance.",
+      "q3b_movement_plan": "Keep moving along the current path and be ready to adjust if the activity shifts. This supports continuing without interrupting the person."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the large box",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot should continue as the activity type is standing and there are no specific tasks or obstacles to address."
+      "task_reason": "The robot should continue as the activity type is standing and there are no specific tasks or obstacles to address.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "This looks like ordinary activity around a large box near the wall vent, making continue the least intrusive option compared with helping, warning, monitoring, or avoiding.",
+      "q3b_movement_plan": "The robot should proceed at a steady pace, keeping the person visible and maintaining a safe distance. It should avoid any sudden movements that could surprise the person or create a risk."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "monitor",
       "task_reason": "The activity appears to be standing near a box. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
       "q3b_selected_proactive_task": "continue",
-      "q3b_task_reason": "The activity appears to involve standing the large box. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
+      "q3b_task_reason": "The activity appears to involve standing. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
       "q3b_movement_plan": "Continue the current route while maintaining normal clearance from the person and the large box. This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this shared open office area, the robot does not need to move in. Continue the current task by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot sees the person standing near a box, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. Two other people are close by. It continues while leaving space."
+      "task_reason": "The robot sees the person standing near a box, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows a bright office lobby with plants, glass doors, and queue barriers. Two other people are also nearby (nearest one about 3.2 m from the target person). It continues while leaving space.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The robot sees the person standing near a box, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows a bright office lobby with plants, glass doors, and queue barriers. Two other people are also nearby (nearest one about 3.2 m from the target person). It continues while leaving space.",
+      "q3b_movement_plan": "In this shared open office area, the robot does not need to move in. Continue the current task by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

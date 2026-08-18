@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the clothes stand slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person lifting the object."
+      "task_reason": "The robot should assist the person lifting the object.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The person is lifting the clothes stand in the office area; so the robot can offer help while leaving room around the object.",
+      "q3b_movement_plan": "Approach slowly and stop where the person still has room to move. This makes the robot available without crowding the activity."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the clothes stand slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person in lifting the object."
+      "task_reason": "The robot should assist the person in lifting the object.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The person is lifting a clothes stand near the trash can, which suggests they may benefit from help with the object, making assist more fitting than warning, avoidance, monitoring, or continuing.",
+      "q3b_movement_plan": "The robot should move towards the person, maintaining a safe distance, and offer support to help them lift the clothes stand more safely."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "assist",
       "task_reason": "The activity appears to be lifting a clothes stand. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
       "q3b_selected_proactive_task": "assist",
-      "q3b_task_reason": "The activity appears to involve lifting the clothes stand. The robot treats this activity is potentially help-needed, so it chooses to assist.",
+      "q3b_task_reason": "The activity appears to involve lifting. The robot treats the activity as potentially needing help, so it chooses to assist.",
       "q3b_movement_plan": "Approach the person and the clothes stand slowly, stop at a comfortable helping distance, and keep enough space for the person to move. This supports the assist action by making the robot available without crowding the activity."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, approach is reachable, but still needs care. Approach carefully by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot sees the person lifting a clothes stand, and the scene suggests the person may need help. The object is bulky, which may make handling harder. Another person is close by. The area is reachable, so it moves in to assist."
+      "task_reason": "The robot sees the person lifting a clothes stand, and the scene suggests the person may need help. The object is bulky, which may make handling harder. The image shows an open office area with tables, chairs, and a glass-walled room nearby. Another person is nearby (about 1.1 m from the target person). The area is reachable, so it moves in to assist.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The robot sees the person lifting a clothes stand, and the scene suggests the person may need help. The object is bulky, which may make handling harder. The image shows an open office area with tables, chairs, and a glass-walled room nearby. Another person is nearby (about 1.1 m from the target person). The area is reachable, so it moves in to assist.",
+      "q3b_movement_plan": "In this open office area, approach is reachable, but still needs care. Approach carefully by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

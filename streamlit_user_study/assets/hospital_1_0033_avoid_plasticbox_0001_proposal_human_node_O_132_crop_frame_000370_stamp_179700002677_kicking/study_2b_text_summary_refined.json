@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the plastic box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the person as they are engaged in a potentially dangerous activity (kicking)."
+      "task_reason": "The robot should avoid the person as they are engaged in a potentially dangerous activity (kicking).",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The situation centers on a person kicking the plastic box in the hospital space; so steering around the person and object is the safer response.",
+      "q3b_movement_plan": "Give the activity a wide berth and choose a side path. This supports avoidance by preserving space around the person."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the plastic box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the activity as it is a kicking action."
+      "task_reason": "The robot should avoid the activity as it is a kicking action.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "Avoid is the stronger choice here because the activity with a plastic box near the floor lamp makes passing through less appropriate than assist, warn, monitor, or continue.",
+      "q3b_movement_plan": "The robot should move away from the area where the person is kicking the box, maintaining a safe distance to avoid any potential hazards."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "avoid",
       "task_reason": "The activity appears to be kicking a plastic box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
       "q3b_selected_proactive_task": "avoid",
-      "q3b_task_reason": "The activity appears to involve kicking the plastic box. The robot treats this area as something to give extra room, so it chooses to avoid.",
+      "q3b_task_reason": "The activity appears to involve kicking. The robot treats this area as something to give extra room, so it chooses to avoid.",
       "q3b_movement_plan": "Keep a conservative distance from the person and the plastic box, then route around the activity with a clear buffer. This supports the avoid action by keeping the robot out of the area where the activity could affect its path."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this corridor-like space near stairs, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot sees the person kicking a plastic box and checks whether its route would interfere. The object may add some handling burden. The robot path is near the person (1.8 m). It also comes close to the person's likely path (0.8 m). Another person is close by. It keeps clear instead of passing through the activity."
+      "task_reason": "The robot sees the person kicking a plastic box and checks whether its route would interfere. The object may add some handling burden. The image shows a hospital corridor beside stairs, with blue bins and a warning sign. Another person is also in the area (about 4.0 m from the target person). The robot future path is near the person (1.8 m). It also comes close to the person's likely path (0.8 m). It keeps clear instead of passing through the activity.",
+      "q3b_selected_proactive_task": "avoid",
+      "q3b_task_reason": "The robot sees the person kicking a plastic box and checks whether its route would interfere. The object may add some handling burden. The image shows a hospital corridor beside stairs, with blue bins and a warning sign. Another person is also in the area (about 4.0 m from the target person). The robot future path is near the person (1.8 m). It also comes close to the person's likely path (0.8 m). It keeps clear instead of passing through the activity.",
+      "q3b_movement_plan": "In this corridor-like space near stairs, the route should avoid interfering with the activity. Reroute around the activity by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist in carrying the chair."
+      "task_reason": "The robot should assist in carrying the chair.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The situation centers on a person carrying the large table in the office area; so alerting the person helps avoid a surprise around the activity.",
+      "q3b_movement_plan": "Approach only enough to be noticed, then keep clear of the person and object. This supports warning without crowding the scene."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.8,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person in carrying the chair."
+      "task_reason": "The robot should assist the person in carrying the chair.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The scene calls for alerting rather than helping or detouring, since the person is carrying a large table near the chair and the risk is immediate but localized.",
+      "q3b_movement_plan": "The robot should move to a position where it can clearly see the person and the table, then issue a warning to the person to avoid the table."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "assist",
       "task_reason": "The activity appears to be carrying a large table. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
       "q3b_selected_proactive_task": "warn",
-      "q3b_task_reason": "The activity appears to involve carrying the large table. The robot treats the activity as needing caution, so it chooses to warn.",
+      "q3b_task_reason": "The activity appears to involve carrying. The robot treats the activity as needing caution, so it chooses to warn.",
       "q3b_movement_plan": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the large table. This supports the warn action by drawing attention to risk while preserving a safe buffer."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this corridor-like office passage, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "warn",
-      "task_reason": "The robot sees the person carrying a large table, which may need attention for safety. The object may be hard to handle. Another person is close by. The scene also suggests the person may need attention and the robot is near the person (1.9 m), so it gives a warning from a clear position."
+      "task_reason": "The robot sees the person carrying a large table, which may need attention for safety. The object may be hard to handle. The image shows a corridor-like office passage with a dark carpet runner, tables, and wall decorations. Another person is nearby (about 1.4 m from the target person). The scene also suggests the person may need attention and the robot is near the person (1.9 m), so it gives a warning from a clear position.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The robot sees the person carrying a large table, which may need attention for safety. The object may be hard to handle. The image shows a corridor-like office passage with a dark carpet runner, tables, and wall decorations. Another person is nearby (about 1.4 m from the target person). The scene also suggests the person may need attention and the robot is near the person (1.9 m), so it gives a warning from a clear position.",
+      "q3b_movement_plan": "In this corridor-like office passage, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

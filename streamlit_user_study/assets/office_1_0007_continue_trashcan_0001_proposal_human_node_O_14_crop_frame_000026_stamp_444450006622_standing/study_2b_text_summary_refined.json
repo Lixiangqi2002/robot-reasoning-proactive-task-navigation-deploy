@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the trash can",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot is not interacting with any specific object or person, and there is no available context to determine if it should assist, warn, monitor, avoid, or continue."
+      "task_reason": "The robot is not interacting with any specific object or person, and there is no available context to determine if it should assist, warn, monitor, avoid, or continue.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "Here, the person is standing near the trash can in the office area; so there is no clear need to interrupt the person.",
+      "q3b_movement_plan": "Keep moving along the current path and be ready to adjust if the activity shifts. This supports continuing without interrupting the person."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the trash can",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot should continue its current path as there is no immediate interaction or task to perform."
+      "task_reason": "The robot should continue its current path as there is no immediate interaction or task to perform.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "Continue fits best here because the activity with a trash can near the door looks stable rather than needing help, warning, monitoring, or avoidance.",
+      "q3b_movement_plan": "The robot should maintain its current direction and speed, continuing to move towards the trash can without any adjustments."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "monitor",
       "task_reason": "The activity appears to be standing near a trash can. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
       "q3b_selected_proactive_task": "continue",
-      "q3b_task_reason": "The activity appears to involve standing the trash can. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
+      "q3b_task_reason": "The activity appears to involve standing. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
       "q3b_movement_plan": "Continue the current route while maintaining normal clearance from the person and the trash can. This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, the immediate approach is not clear. Continue the current task by leaving extra room around the person and avoiding the space between the person and the object.",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot sees the person standing near a trash can, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. It continues while leaving space."
+      "task_reason": "The robot sees the person standing near a trash can, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows a bright office lobby with queue barriers, a plant, and a door in view. It continues while leaving space.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The robot sees the person standing near a trash can, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows a bright office lobby with queue barriers, a plant, and a door in view. It continues while leaving space.",
+      "q3b_movement_plan": "In this open office area, the immediate approach is not clear. Continue the current task by leaving extra room around the person and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

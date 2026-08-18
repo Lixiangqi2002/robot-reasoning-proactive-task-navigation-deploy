@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the tripod slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person in carrying the object."
+      "task_reason": "The robot should assist the person in carrying the object.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The person is carrying the tripod in the warehouse aisle; so watching carefully is more appropriate than moving into the person's space.",
+      "q3b_movement_plan": "Hold a clear viewing angle on the person and object while leaving the route open. This supports monitoring without stepping into the activity."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the tripod slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person to carry the object."
+      "task_reason": "The robot should assist the person to carry the object.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The person is carrying a tripod near the small box, making the activity worth attention without clearly calling for help, a warning, avoidance, or simply continuing.",
+      "q3b_movement_plan": "The robot should maintain a safe distance from the person, keeping an awareness of their movements to ensure safety and avoid any potential hazards."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "assist",
       "task_reason": "The activity appears to be carrying a tripod. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
       "q3b_selected_proactive_task": "monitor",
-      "q3b_task_reason": "The activity appears to involve carrying the tripod. The robot treats the activity as worth observing, so it chooses to monitor.",
+      "q3b_task_reason": "The activity appears to involve carrying. The robot treats the activity as worth observing, so it chooses to monitor.",
       "q3b_movement_plan": "Keep the person and the tripod in view from a normal passing distance, and continue moving only while the route remains clear. This supports the monitor action by watching the activity without interrupting it."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this shared warehouse area, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "monitor",
-      "task_reason": "The robot sees the person carrying a tripod, which may need attention for safety. The object is bulky, which may make handling harder. Several other people are close by (4). The robot is at a moderate distance from the person (4.1 m), there is no clear sign that the person needs help, and there is no close route issue, so it keeps watching instead of moving in or rerouting."
+      "task_reason": "The robot sees the person carrying a tripod, which may need attention for safety. The object is bulky, which may make handling harder. The image shows a shared warehouse area with forklifts, carts, pallets, and several people in view. Four other people are also nearby (nearest one about 2.8 m from the target person). The robot is at a moderate distance from the person (4.1 m), there is no clear sign that the person needs help, and there is no close route issue, so it keeps watching instead of moving in or rerouting.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The robot sees the person carrying a tripod, which may need attention for safety. The object is bulky, which may make handling harder. The image shows a shared warehouse area with forklifts, carts, pallets, and several people in view. Four other people are also nearby (nearest one about 2.8 m from the target person). The robot is at a moderate distance from the person (4.1 m), there is no clear sign that the person needs help, and there is no close route issue, so it keeps watching instead of moving in or rerouting.",
+      "q3b_movement_plan": "In this shared warehouse area, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

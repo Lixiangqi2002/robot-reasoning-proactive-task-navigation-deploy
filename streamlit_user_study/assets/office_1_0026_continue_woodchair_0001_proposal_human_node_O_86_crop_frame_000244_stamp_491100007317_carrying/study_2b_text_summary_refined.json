@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path",
       "selected_navigation_constraints": "Continue the current route while maintaining normal clearance from the person and the wooden chair",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot is tasked with carrying an object, which is indicated by the activity type 'carrying'. the robot should continue its current path."
+      "task_reason": "The robot is tasked with carrying an object, which is indicated by the activity type 'carrying'. the robot should continue its current path.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "Here, the person is carrying the wooden chair in the office area; so there is no clear need to interrupt the person.",
+      "q3b_movement_plan": "Keep moving along the current path and be ready to adjust if the activity shifts. This supports continuing without interrupting the person."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the wooden chair slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot is positioned near a person and an object, likely to assist in carrying the object."
+      "task_reason": "The robot is positioned near a person and an object, likely to assist in carrying the object.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The person is simply carrying a chair and does not appear to be in immediate danger or benefit from assistance. The environment is stable, so no intervention is necessary.",
+      "q3b_movement_plan": "The robot should move forward at a steady pace, keeping the person visible and maintaining a safe distance to ensure the person's safety while they carry the chair."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "assist",
       "task_reason": "The activity appears to be carrying a wooden chair. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
       "q3b_selected_proactive_task": "continue",
-      "q3b_task_reason": "The activity appears to involve carrying the wooden chair. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
+      "q3b_task_reason": "The activity appears to involve carrying. The robot treats the activity as stable enough to proceed, so it chooses to continue.",
       "q3b_movement_plan": "Continue the current route while maintaining normal clearance from the person and the wooden chair. This supports the continue action by letting the robot proceed while staying ready to adjust if the activity moves into its path."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, the robot does not need to move in. Continue the current task by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path.",
       "selected_proactive_task": "continue",
-      "task_reason": "The robot sees the person carrying a wooden chair, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The robot is far from the person (6.2 m), so it continues while leaving space."
+      "task_reason": "The robot sees the person carrying a wooden chair, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows an open office area with work tables, computers, and glass-walled rooms. The robot is far from the person (6.2 m), so it continues while leaving space.",
+      "q3b_selected_proactive_task": "continue",
+      "q3b_task_reason": "The robot sees the person carrying a wooden chair, but there is no clear reason to help, warn, or reroute. The object may add some handling burden. The image shows an open office area with work tables, computers, and glass-walled rooms. The robot is far from the person (6.2 m), so it continues while leaving space.",
+      "q3b_movement_plan": "In this open office area, the robot does not need to move in. Continue the current task by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

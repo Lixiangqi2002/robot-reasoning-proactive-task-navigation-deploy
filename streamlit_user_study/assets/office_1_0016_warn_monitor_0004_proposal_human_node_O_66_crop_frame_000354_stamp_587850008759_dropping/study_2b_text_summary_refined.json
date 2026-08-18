@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the monitor, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the person and object to prevent any potential collision."
+      "task_reason": "The robot should avoid the person and object to prevent any potential collision.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The person is dropping the monitor in the office area; so the robot should make its presence clear before entering the area.",
+      "q3b_movement_plan": "Pause before entering the activity area and warn from a spot the person can notice. This makes the robot predictable before it moves closer."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.8,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the monitor slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person to prevent the object from being dropped."
+      "task_reason": "The robot should assist the person to prevent the object from being dropped.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "A warning is the right level of response: the person is dropping a monitor near the sofa, which looks riskier than a passive monitor or continue choice.",
+      "q3b_movement_plan": "The robot should move to a safe distance from the person and the dropped monitor, then issue a warning to the person to be careful and avoid the area."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "monitor",
       "task_reason": "The activity appears to be dropping a monitor. For this kind of activity, the robot treats the situation as worth watching, so it chooses to monitor.",
       "q3b_selected_proactive_task": "warn",
-      "q3b_task_reason": "The activity appears to involve dropping the monitor. The robot treats the activity as needing caution, so it chooses to warn.",
+      "q3b_task_reason": "The activity appears to involve dropping. The robot treats the activity as needing caution, so it chooses to warn.",
       "q3b_movement_plan": "Move to a safe nearby position, warn before entering the activity area, and stay clear of the person and the monitor. This supports the warn action by drawing attention to risk while preserving a safe buffer."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "warn",
-      "task_reason": "The robot sees the person dropping a monitor, which may need attention for safety. The object may add some handling burden. Another person is close by. The scene also suggests the person may need attention and the robot is near the person (2.4 m), so it gives a warning from a clear position."
+      "task_reason": "The robot sees the person dropping a monitor, which may need attention for safety. The object may add some handling burden. The image shows an open office area with desks, chairs, glass walls, and a dark carpet edge. Another person is also in the area (about 4.1 m from the target person). The scene also suggests the person may need attention and the robot is near the person (2.4 m), so it gives a warning from a clear position.",
+      "q3b_selected_proactive_task": "warn",
+      "q3b_task_reason": "The robot sees the person dropping a monitor, which may need attention for safety. The object may add some handling burden. The image shows an open office area with desks, chairs, glass walls, and a dark carpet edge. Another person is also in the area (about 4.1 m from the target person). The scene also suggests the person may need attention and the robot is near the person (2.4 m), so it gives a warning from a clear position.",
+      "q3b_movement_plan": "In this open office area, approach is reachable, but still needs care. Warn from a visible position by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

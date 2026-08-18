@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the plastic box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The robot should avoid the person as they are engaged in a kicking action, which could be dangerous."
+      "task_reason": "The robot should avoid the person as they are engaged in a kicking action, which could be dangerous.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The scene shows a person kicking the plastic box in the office area; so monitoring keeps the activity in view without interrupting it.",
+      "q3b_movement_plan": "Hold a clear viewing angle on the person and object while leaving the route open. This supports monitoring without stepping into the activity."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the avoid action by keeping the robot out of the area where the activity could affect its path",
       "selected_navigation_constraints": "Keep a conservative distance from the person and the plastic box, then route around the activity with a clear buffer",
       "selected_proactive_task": "avoid",
-      "task_reason": "The activity appears to be kicking, which suggests a potential conflict or aggressive action. The robot should avoid this activity to prevent harm or damage."
+      "task_reason": "The activity appears to be kicking, which suggests a potential conflict or aggressive action. The robot should avoid this activity to prevent harm or damage.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The person is kicking a plastic box near the wall vent, making the activity worth attention without clearly calling for help, a warning, avoidance, or simply continuing.",
+      "q3b_movement_plan": "The robot should maintain a safe distance from the person and the object, keeping an eye on the person's movements to ensure they do not pose a risk."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "avoid",
       "task_reason": "The activity appears to be kicking a plastic box. For this kind of activity, the robot treats the area around the person and object as a place to give extra room, so it chooses to avoid.",
       "q3b_selected_proactive_task": "monitor",
-      "q3b_task_reason": "The activity appears to involve kicking the plastic box. The robot treats the activity as worth observing, so it chooses to monitor.",
+      "q3b_task_reason": "The activity appears to involve kicking. The robot treats the activity as worth observing, so it chooses to monitor.",
       "q3b_movement_plan": "Keep the person and the plastic box in view from a normal passing distance, and continue moving only while the route remains clear. This supports the monitor action by watching the activity without interrupting it."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this shared open lobby near a doorway, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object.",
       "selected_proactive_task": "monitor",
-      "task_reason": "The robot sees the person kicking a plastic box, which may need attention for safety. The object may add some handling burden. Another person is close by. The robot is near the person (2.1 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting."
+      "task_reason": "The robot sees the person kicking a plastic box, which may need attention for safety. The object may add some handling burden. The image shows a shared office lobby near a doorway, with desks and glass walls behind it. Another person is also nearby (about 3.9 m from the target person). The robot is near the person (2.1 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting.",
+      "q3b_selected_proactive_task": "monitor",
+      "q3b_task_reason": "The robot sees the person kicking a plastic box, which may need attention for safety. The object may add some handling burden. The image shows a shared office lobby near a doorway, with desks and glass walls behind it. Another person is also nearby (about 3.9 m from the target person). The robot is near the person (2.1 m) and there is no clear sign that the person needs help, so it keeps watching instead of moving in or rerouting.",
+      "q3b_movement_plan": "In this shared open lobby near a doorway, the robot does not need to move in. Keep the activity in view by leaving extra room around the person, keeping clear of nearby people, and avoiding the space between the person and the object."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"

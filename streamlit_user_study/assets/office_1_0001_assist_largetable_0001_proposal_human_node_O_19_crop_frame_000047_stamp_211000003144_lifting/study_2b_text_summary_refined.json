@@ -5,14 +5,20 @@
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot should assist the person in lifting the object."
+      "task_reason": "The robot should assist the person in lifting the object.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The person is lifting the large table in the office area; so the robot can offer help while leaving room around the object.",
+      "q3b_movement_plan": "Approach slowly and stop where the person still has room to move. This makes the robot available without crowding the activity."
     },
     "b2_vlm_with_dsg_neural_only": {
       "confidence_0_to_1": 0.9,
       "navigation_constraints_reason": "This supports the assist action by making the robot available without crowding the activity",
       "selected_navigation_constraints": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move",
       "selected_proactive_task": "assist",
-      "task_reason": "The person is lifting an object, which is a lifting action."
+      "task_reason": "The person is lifting an object, which is a lifting action.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The activity looks like a potential support need around a large table near the paper stand, so helping is more appropriate than treating it as only a hazard or background event.",
+      "q3b_movement_plan": "The robot should move to a position where it can safely assist the person, maintaining a safe distance while providing support."
     },
     "b3_rule_based": {
       "confidence_0_to_1": 0.5,
@@ -23,7 +29,7 @@
       "selected_proactive_task": "assist",
       "task_reason": "The activity appears to be lifting a large table. For this kind of activity, the robot treats help as potentially useful, so it chooses to assist.",
       "q3b_selected_proactive_task": "assist",
-      "q3b_task_reason": "The activity appears to involve lifting the large table. The robot treats this activity is potentially help-needed, so it chooses to assist.",
+      "q3b_task_reason": "The activity appears to involve lifting. The robot treats the activity as potentially needing help, so it chooses to assist.",
       "q3b_movement_plan": "Approach the person and the large table slowly, stop at a comfortable helping distance, and keep enough space for the person to move. This supports the assist action by making the robot available without crowding the activity."
     },
     "proposed_vlm_dsg_nesy": {
@@ -31,7 +37,10 @@
       "navigation_constraints_reason": "",
       "selected_navigation_constraints": "In this open office area, approach is reachable, but still needs care. Approach carefully by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path.",
       "selected_proactive_task": "assist",
-      "task_reason": "The robot sees the person lifting a large table, and the scene suggests the person may need help. The object may add some handling burden. The area is reachable, so it moves in to assist."
+      "task_reason": "The robot sees the person lifting a large table, and the scene suggests the person may need help. The object may add some handling burden. The image shows an open office lobby with plants, sofas, a reception desk, and a screen. The area is reachable, so it moves in to assist.",
+      "q3b_selected_proactive_task": "assist",
+      "q3b_task_reason": "The robot sees the person lifting a large table, and the scene suggests the person may need help. The object may add some handling burden. The image shows an open office lobby with plants, sofas, a reception desk, and a screen. The area is reachable, so it moves in to assist.",
+      "q3b_movement_plan": "In this open office area, approach is reachable, but still needs care. Approach carefully by leaving extra room around the person, avoiding the space between the person and the object, and leaving room for the person's path."
     }
   },
   "schema": "dsg_user_study_study2b_text_summary_v1"
