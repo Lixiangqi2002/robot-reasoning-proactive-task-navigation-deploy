@@ -52,9 +52,23 @@ Optional query parameters:
 ?trial_ids=trial_dir_name_1,trial_dir_name_2
 ```
 
-Responses are appended to:
+Responses are saved to Google Sheets when Streamlit secrets contain a
+`[responses]` section with a `spreadsheet_id`. If Google Sheets is not
+configured, responses fall back to a local CSV:
 
 `streamlit_user_study/responses/user_study_responses.csv`
+
+### Google Sheets response storage
+
+Recommended setup for Streamlit Community Cloud:
+
+1. Create a Google Sheet with a tab named `responses`.
+2. Create a Google Cloud service account and download its JSON key.
+3. Share the Google Sheet with the service account email as an Editor.
+4. In Streamlit Cloud, open the app settings, go to `Secrets`, and paste the
+   values using `streamlit_user_study/secrets.example.toml` as the template.
+
+Do not commit the real service account key to GitHub.
 
 ## Static assets
 

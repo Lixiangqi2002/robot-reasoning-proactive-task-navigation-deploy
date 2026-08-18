@@ -29,6 +29,10 @@ RESPONSE_CSV = Path(
         "streamlit_user_study/responses/user_study_responses.csv",
     )
 )
+GOOGLE_SHEETS_SCOPES = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive",
+]
 
 RANDOMIZE_OPTION_ORDER = os.environ.get("DSG_RANDOMIZE_OPTION_ORDER", "1") != "0"
 
@@ -781,9 +785,74 @@ def response_rows(
     return rows
 
 
-def append_rows(rows: list[dict[str, Any]]) -> None:
+def secrets_section(name: str) -> dict[str, Any]:
+    try:
+        section = st.secrets.get(name, {})
+    except Exception:
+        return {}
+    return dict(section) if section else {}
+
+
+def append_rows_to_google_sheet(rows: list[dict[str, Any]]) -> str | None:
+    responses_config = secrets_section("responses")
+    spreadsheet_id = responses_config.get("spreadsheet_id") or responses_config.get("sheet_id")
+    if not spreadsheet_id:
+        return None
+
+    try:
+        import gspread
+        from google.oauth2.service_account import Credentials
+    except ImportError as exc:
+        raise RuntimeError(
+            "Google Sheets saving is configured, but gspread/google-auth is not installed."
+        ) from exc
+
+    service_account_info = secrets_section("gcp_service_account")
+    if not service_account_info:
+        service_account_info = secrets_section("gsheets_service_account")
+    if not service_account_info:
+        raise RuntimeError(
+            "Google Sheets saving is configured, but no service account was found in Streamlit secrets."
+        )
+
+    if "private_key" in service_account_info:
+        service_account_info["private_key"] = service_account_info["private_key"].replace("\\n", "\n")
+
+    worksheet_name = responses_config.get("worksheet", "responses")
+    credentials = Credentials.from_service_account_info(
+        service_account_info,
+        scopes=GOOGLE_SHEETS_SCOPES,
+    )
+    client = gspread.authorize(credentials)
+    spreadsheet = client.open_by_key(str(spreadsheet_id))
+    try:
+        worksheet = spreadsheet.worksheet(str(worksheet_name))
+    except gspread.WorksheetNotFound:
+        worksheet = spreadsheet.add_worksheet(title=str(worksheet_name), rows=1000, cols=32)
+
+    fieldnames = list(rows[0].keys())
+    existing_values = worksheet.get_all_values()
+    header = existing_values[0] if existing_values else []
+    if not header:
+        worksheet.append_row(fieldnames)
+        header = fieldnames
+    else:
+        merged_header = list(header)
+        for name in fieldnames:
+            if name not in merged_header:
+                merged_header.append(name)
+        if merged_header != header:
+            worksheet.update("1:1", [merged_header])
+            header = merged_header
+
+    values = [[str(row.get(column, "")) for column in header] for row in rows]
+    worksheet.append_rows(values, value_input_option="USER_ENTERED")
+    return f"Google Sheet worksheet '{worksheet_name}'"
+
+
+def append_rows_to_csv(rows: list[dict[str, Any]]) -> str:
     if not rows:
-        return
+        return "no rows"
     RESPONSE_CSV.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(rows[0].keys())
     exists = RESPONSE_CSV.exists()
@@ -810,6 +879,14 @@ def append_rows(rows: list[dict[str, Any]]) -> None:
         if not exists:
             writer.writeheader()
         writer.writerows(rows)
+    return str(RESPONSE_CSV)
+
+
+def append_rows(rows: list[dict[str, Any]]) -> str:
+    saved_to = append_rows_to_google_sheet(rows)
+    if saved_to:
+        return saved_to
+    return append_rows_to_csv(rows)
 
 
 def task_label_for(trial_dir: Path) -> str:
@@ -1374,8 +1451,8 @@ def main() -> None:
         if missing:
             st.error(f"Please answer all questions before submitting. Missing: {len(missing)} ratings.")
         else:
-            append_rows(all_rows)
-            st.success(f"Saved {len(all_rows)} ratings to {RESPONSE_CSV}")
+            saved_to = append_rows(all_rows)
+            st.success(f"Saved {len(all_rows)} ratings to {saved_to}")
 
 
 if __name__ == "__main__":
