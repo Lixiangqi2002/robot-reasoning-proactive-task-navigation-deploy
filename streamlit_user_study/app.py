@@ -145,7 +145,16 @@ def read_json(path: Path) -> dict[str, Any]:
 
 
 def first_trial_dirs() -> list[Path]:
-    return sorted(p for p in DATA_ROOT.iterdir() if p.is_dir() and (p / "manifest.json").exists())
+    scene_order = {"warehouse": 0, "office": 1, "hospital": 2}
+
+    def sort_key(path: Path) -> tuple[int, str]:
+        scene_name = path.name.split("_", 1)[0]
+        return (scene_order.get(scene_name, 99), path.name)
+
+    return sorted(
+        (p for p in DATA_ROOT.iterdir() if p.is_dir() and (p / "manifest.json").exists()),
+        key=sort_key,
+    )
 
 
 def get_query_value(name: str, default: str = "") -> str:
@@ -609,9 +618,7 @@ def render_intro_page(scene_count: int) -> str | None:
         )
         st.write(
             "There are no right or wrong answers. Some scenes may be unclear or ambiguous. "
-            "Please use your best judgement based only on the information shown in the study. "
-            "We are interested in your evaluation of the robot's outputs, not in collecting new "
-            "knowledge or rules from you."
+            "Please use your best judgement based only on the information shown in the study."
         )
     with st.container(border=True):
         st.write("When answering the study questions, you will see these main robot response options:")
