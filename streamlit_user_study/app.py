@@ -316,9 +316,7 @@ def rule_semantics_task_for(trial_dir: Path) -> str:
     action = hoi_action_for(trial_dir)
     if action in {"carrying", "lifting", "holding"}:
         return "assist"
-    if action in {"kicking", "dropping", "throwing"}:
-        return "warn"
-    return "continue"
+    return "warn"
 
 
 def rule_spatial_task_for(summary: dict[str, Any]) -> str:
@@ -336,8 +334,6 @@ def rule_spatial_task_for(summary: dict[str, Any]) -> str:
         )
     ):
         return "avoid"
-    if "robot is at a moderate distance from the person" in reason or "area is reachable" in reason:
-        return "monitor"
     if "robot is far from the person" in reason or "no close route issue" in reason:
         return "continue"
     match = re.search(r"robot[^.]*\((\d+(?:\.\d+)?)\s*m\)", reason)
@@ -345,9 +341,7 @@ def rule_spatial_task_for(summary: dict[str, Any]) -> str:
         distance = float(match.group(1))
         if distance <= 2.5:
             return "avoid"
-        if distance >= 5.0:
-            return "continue"
-    return "monitor"
+    return "continue"
 
 
 def q3a_selected_task_options(
