@@ -1168,20 +1168,28 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         for label, method in method_order
     }
 
-    st.subheader("Q3A: Which Robot Makes the Best Decision?")
+    selected_task_options: list[Option] = []
+    seen_tasks: set[str] = set()
+    for option in display_options:
+        task = str(option_bodies[option.label]["task"])
+        if task not in seen_tasks:
+            selected_task_options.append(Option(task, f"selected_task:{task}"))
+            seen_tasks.add(task)
+    task_display_order = option_display_order(selected_task_options)
+
+    st.subheader("Q3A: Which Selected Task Makes the Best Decision?")
     st.write(
-        "First, judge each robot's chosen action for this scene. "
-        "Focus on whether the robot reacts with the right strength and chooses a good action."
+        "First, look at all robot tasks selected for this scene. If several robots chose the same task, "
+        "that task appears only once here. Judge each selected task by itself."
     )
-    for row_start in range(0, len(display_options), 2):
+    for row_start in range(0, len(selected_task_options), 2):
         cols = st.columns(2, vertical_alignment="top")
-        for col, option in zip(cols, display_options[row_start:row_start + 2]):
-            body = option_bodies[option.label]
+        for col, option in zip(cols, selected_task_options[row_start:row_start + 2]):
             with col:
                 with st.container(border=True):
-                    st.subheader(f"Robot {option.label}")
+                    st.subheader(f"Selected task: {option.label}")
                     st.markdown(
-                        f"**Robot action:** {important_text(body['task'], color=RED)}",
+                        f"**Robot task:** {important_text(option.label, color=RED)}",
                         unsafe_allow_html=True,
                     )
                     reaction_question = (
@@ -1192,7 +1200,7 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                         reaction_question,
                         LIKERT_UNDER_OVER_REACT,
                         index=None,
-                        key=f"{trial_dir.name}_Q3A_1_reaction_level_{option.label}",
+                        key=f"{trial_dir.name}_Q3A_1_reaction_level_task_{option.label}",
                         horizontal=True,
                     )
                     add_rating_row(
@@ -1205,7 +1213,7 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                         question_text=reaction_question,
                         option=option,
                         answer=reaction_answer,
-                        display_order=display_order,
+                        display_order=task_display_order,
                     )
                     add_score_question(
                         rows,
@@ -1214,17 +1222,17 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                         trial_dir=trial_dir,
                         task_label=task_label,
                         question_id="Q3A_2_action_decision_quality",
-                        question_text="How good is this robot's chosen action for this scene? 1 means very poor, and 10 means excellent.",
+                        question_text="How good is this selected task for this scene? 1 means very poor, and 10 means excellent.",
                         option=option,
-                        display_order=display_order,
+                        display_order=task_display_order,
                     )
 
     decision_ranking_answers = ranking_control(
-        f"{trial_dir.name}_Q3A_0_decision_quality_rank",
-        "Rank the four robots by overall decision quality.",
-        display_options,
-        card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the best decision quality for this scene.",
+        f"{trial_dir.name}_Q3A_0_selected_task_quality_rank",
+        "Rank all selected tasks by overall decision quality.",
+        selected_task_options,
+        card_label="Task",
+        hint="Choose each selected task once. Rank 1 means the best task decision for this scene.",
     )
     rows.extend(
         response_rows(
@@ -1232,11 +1240,11 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q3A_0_decision_quality_rank",
-            question_text="Rank the four robots by overall decision quality.",
+            question_id="Q3A_0_selected_task_quality_rank",
+            question_text="Rank all selected tasks by overall decision quality.",
             answers=decision_ranking_answers,
-            option_methods={o.label: o.method for o in options},
-            display_order=display_order,
+            option_methods={o.label: o.method for o in selected_task_options},
+            display_order=task_display_order,
         )
     )
 
