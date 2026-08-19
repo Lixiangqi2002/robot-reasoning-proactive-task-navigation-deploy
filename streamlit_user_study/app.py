@@ -344,6 +344,12 @@ def rule_spatial_task_for(summary: dict[str, Any]) -> str:
     return "continue"
 
 
+def rule_combined_task_for(trial_dir: Path, summary: dict[str, Any]) -> str:
+    if rule_spatial_task_for(summary) == "continue":
+        return "continue"
+    return rule_semantics_task_for(trial_dir)
+
+
 def q3a_selected_task_options(
     trial_dir: Path,
     summary: dict[str, Any],
@@ -352,8 +358,7 @@ def q3a_selected_task_options(
 ) -> list[Option]:
     task_sources: dict[str, list[str]] = {}
     task_candidates: list[tuple[str, str]] = [
-        ("C_semantic_rule", rule_semantics_task_for(trial_dir)),
-        ("C_spatial_rule", rule_spatial_task_for(summary)),
+        ("C_combined_rule", rule_combined_task_for(trial_dir, summary)),
     ]
     for option in display_options:
         if option.label == "C":
