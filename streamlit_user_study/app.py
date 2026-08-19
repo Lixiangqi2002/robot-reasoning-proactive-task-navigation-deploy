@@ -6,6 +6,7 @@ import html
 import json
 import os
 import random
+import re
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -298,6 +299,83 @@ def task_plain_action(task: str) -> str:
     task = task.lower().strip()
     allowed = {"warn", "assist", "continue", "monitor", "avoid"}
     return task if task in allowed else display_value(task)
+
+
+def hoi_action_for(trial_dir: Path) -> str:
+    parsed = read_json(trial_dir / "study_1_proposed_hoir1_parsed_output.json")
+    action = (
+        parsed.get("hoi_type_override")
+        or parsed.get("interaction_type_override")
+        or parsed.get("verb class")
+        or trial_dir.name.rsplit("_", 1)[-1]
+    )
+    return str(action or "").lower().strip().replace(" ", "_")
+
+
+def rule_semantics_task_for(trial_dir: Path) -> str:
+    action = hoi_action_for(trial_dir)
+    if action in {"carrying", "lifting", "holding"}:
+        return "assist"
+    if action in {"kicking", "dropping", "throwing"}:
+        return "warn"
+    return "continue"
+
+
+def rule_spatial_task_for(summary: dict[str, Any]) -> str:
+    reason = clean_participant_text(
+        summary.get("proposed_vlm_dsg_nesy", {}).get("task_reason", "")
+    ).lower()
+    if any(
+        phrase in reason
+        for phrase in (
+            "future path is very close",
+            "route would interfere",
+            "tight",
+            "robot is near the person",
+            "robot is very close",
+        )
+    ):
+        return "avoid"
+    if "robot is at a moderate distance from the person" in reason or "area is reachable" in reason:
+        return "monitor"
+    if "robot is far from the person" in reason or "no close route issue" in reason:
+        return "continue"
+    match = re.search(r"robot[^.]*\((\d+(?:\.\d+)?)\s*m\)", reason)
+    if match:
+        distance = float(match.group(1))
+        if distance <= 2.5:
+            return "avoid"
+        if distance >= 5.0:
+            return "continue"
+    return "monitor"
+
+
+def q3a_selected_task_options(
+    trial_dir: Path,
+    summary: dict[str, Any],
+    option_bodies: dict[str, dict[str, str]],
+    display_options: list[Option],
+) -> list[Option]:
+    task_sources: dict[str, list[str]] = {}
+    task_candidates: list[tuple[str, str]] = [
+        ("C_semantic_rule", rule_semantics_task_for(trial_dir)),
+        ("C_spatial_rule", rule_spatial_task_for(summary)),
+    ]
+    for option in display_options:
+        if option.label == "C":
+            continue
+        task_candidates.append((option.method, option_bodies[option.label]["task"]))
+
+    for source, raw_task in task_candidates:
+        task = task_plain_action(display_value(raw_task))
+        if not task:
+            continue
+        task_sources.setdefault(task, []).append(source)
+
+    return [
+        Option(task, f"selected_task:{task};sources:{','.join(sources)}")
+        for task, sources in task_sources.items()
+    ]
 
 
 def summarize_constraints(nav_constraints: Any) -> str:
@@ -1176,13 +1254,19 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         for label, method in method_order
     }
 
-    selected_task_options: list[Option] = []
-    seen_tasks: set[str] = set()
-    for option in display_options:
-        task = str(option_bodies[option.label]["task"])
-        if task not in seen_tasks:
-            selected_task_options.append(Option(task, f"selected_task:{task}"))
-            seen_tasks.add(task)
+    selected_task_options = q3a_selected_task_options(
+        trial_dir,
+        summary,
+        option_bodies,
+        display_options,
+    )
+    selected_task_options = stable_shuffle(
+        selected_task_options,
+        participant_id=participant_id,
+        bundle_id=bundle_id,
+        trial_dir=trial_dir,
+        section="Q3A_selected_tasks",
+    )
     task_display_order = option_display_order(selected_task_options)
 
     st.subheader("Q3A: Which Selected Task Makes the Best Decision?")
