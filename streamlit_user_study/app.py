@@ -1618,6 +1618,32 @@ around people.
             display_order=display_order,
         )
     )
+    social_answers = ranking_control(
+        f"{trial_dir.name}_Q4B_4_social_appropriateness_rank",
+        "Rank the three robots by social appropriateness.",
+        display_options,
+        card_label="Robot",
+        hint=(
+            "Focus only on whether the updated target place and route follow normal social expectations "
+            "around people. Rank 1 means the most socially appropriate update."
+        ),
+        question_markdown=(
+            "**Rank the three robots by social appropriateness of the updated goal and route.**"
+        ),
+    )
+    rows.extend(
+        response_rows(
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q4B_4_social_appropriateness_rank",
+            question_text="Rank the three robots by social appropriateness of the updated goal and route.",
+            answers=social_answers,
+            option_methods={o.label: o.method for o in options},
+            display_order=display_order,
+        )
+    )
     return rows
 
 
