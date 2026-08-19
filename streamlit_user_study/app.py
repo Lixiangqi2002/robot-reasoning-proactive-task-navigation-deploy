@@ -436,6 +436,14 @@ def show_image(
         st.warning(f"Missing image: {caption}")
 
 
+def show_target_hoi_scene(trial_dir: Path) -> None:
+    show_image(
+        abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_overlay_rgb_refined.png")
+        or abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"),
+        "Full scene with the target person-object interaction highlighted",
+    )
+
+
 def show_rgb_bev_pair(
     trial_dir: Path,
     rgb_path: Path | None,
@@ -1141,7 +1149,7 @@ def add_score_question(
 
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Robot Decision")
-    show_image(abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"), "Full scene")
+    show_target_hoi_scene(trial_dir)
     st.write(
         "Each robot gives one possible response for the same scene. "
         "First, judge whether the robot reacts at the right level and chooses a good action."
@@ -1250,7 +1258,7 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
 
     st.divider()
     st.header("Q4A: High-Level Natural Language Planning")
-    show_image(abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"), "Full scene")
+    show_target_hoi_scene(trial_dir)
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
