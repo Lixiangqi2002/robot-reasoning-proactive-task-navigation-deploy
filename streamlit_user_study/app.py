@@ -1595,14 +1595,14 @@ around people.
             "orange, cyan, and green are the updated navigation decisions from the three robots."
         ),
     )
-    overall_answers = ranking_control(
-        f"{trial_dir.name}_Q4B_3_overall_route_rank",
-        f"Rank the three robots by overall updated goal and route quality for the task: {task_text}.",
+    task_support_answers = ranking_control(
+        f"{trial_dir.name}_Q4B_3_task_support_rank",
+        f"Rank the three robots by how well the updated goal and route support the task: {task_text}.",
         display_options,
         card_label="Robot",
-        hint="Consider both task support and social appropriateness. Rank 1 means the best updated goal and route overall.",
+        hint="Focus only on whether the updated goal and route help the robot complete its task. Rank 1 means the strongest task support.",
         question_markdown=(
-            f"**Rank the three robots by overall updated goal and route quality for the task: {task_html}.**"
+            f"**Rank the three robots by task support for: {task_html}.**"
         ),
     )
     rows.extend(
@@ -1611,9 +1611,9 @@ around people.
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q4B_3_overall_route_rank",
-            question_text=f"Rank the three robots by overall updated goal and route quality for the task: {task_text}.",
-            answers=overall_answers,
+            question_id="Q4B_3_task_support_rank",
+            question_text=f"Rank the three robots by how well the updated goal and route support the task: {task_text}.",
+            answers=task_support_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
         )
