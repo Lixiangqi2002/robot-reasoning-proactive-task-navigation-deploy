@@ -105,6 +105,34 @@ ROBOT_ROUTE_COLORS = {
     "B": "cyan",
     "C": "green",
 }
+RESPONSE_DEFINITIONS = {
+    "continue": "keep going as planned; no special response is needed",
+    "monitor": "keep watching because the situation may become relevant, but do not get involved too closely",
+    "avoid": "adjust its route to stay out of the way",
+    "assist": "move close enough and offer or provide help",
+    "warn": "move to a suitable speaking distance and alert someone to prevent a risk, problem, or safety concern",
+}
+HELP_NEEDED_LABELS = {
+    1: "the person does not seem to need help",
+    2: "the person probably does not need help",
+    3: "the person may need some help",
+    4: "the person likely needs help",
+    5: "the person clearly needs help",
+}
+ATTENTION_NEEDED_LABELS = {
+    1: "the robot probably does not need to keep watching this situation",
+    2: "the robot may briefly keep an eye on this situation",
+    3: "the robot should keep watching because the situation may become relevant",
+    4: "the robot should pay close attention because the situation may change soon",
+    5: "the robot should keep very close watch because the situation may soon require a response",
+}
+CONCERN_LABELS = {
+    1: "there is no clear safety concern nearby",
+    2: "there may be a small safety concern nearby",
+    3: "there may be a possible safety concern nearby",
+    4: "there is likely a safety concern nearby",
+    5: "there is clearly a safety concern nearby",
+}
 
 DISPLAY_LABELS = {
     "local_hazard": "something nearby that may need attention",
@@ -231,6 +259,32 @@ def display_value(value: Any) -> str:
     return DISPLAY_LABELS.get(text, text.replace("_", " "))
 
 
+def response_description(response: Any) -> str:
+    key = task_plain_action(display_value(response))
+    return RESPONSE_DEFINITIONS.get(key, "")
+
+
+def response_plain(response: Any) -> str:
+    key = task_plain_action(display_value(response))
+    description = response_description(key)
+    if description:
+        return f"{key} ({description})"
+    return key
+
+
+def response_html(response: Any, *, color: str = RED) -> str:
+    key = task_plain_action(display_value(response))
+    description = html.escape(response_description(key))
+    label = important_text(key, color=color)
+    if description:
+        return f"{label} <em>({description})</em>"
+    return label
+
+
+def response_definitions_markdown() -> str:
+    return "\n".join(f"- **{name}** *({description})*" for name, description in RESPONSE_DEFINITIONS.items())
+
+
 def important_text(value: Any, *, color: str = GREEN) -> str:
     text = html.escape(str(value or ""))
     return f"<span style='color:{color}; font-weight:700; font-style:italic;'>{text}</span>"
@@ -254,6 +308,15 @@ def score_text(value: Any) -> str:
     except ValueError:
         color = GREEN
     return important_text(f"{text} / 5", color=color)
+
+
+def natural_score_label(value: Any, labels: dict[int, str]) -> str:
+    try:
+        score = int(float(str(value).strip()))
+    except (TypeError, ValueError):
+        score = 1
+    score = min(5, max(1, score))
+    return labels[score]
 
 
 def clean_participant_text(text: Any) -> str:
@@ -552,6 +615,13 @@ def show_rgb_bev_pair(
                 caption_markdown(bev_caption_markdown)
 
 
+def show_rgb_route_card(path: Path | None, title: str, caption: str) -> None:
+    with st.container(border=True):
+        st.markdown(f"**{title}**")
+        show_image(path, "")
+        caption_markdown(caption)
+
+
 def option_rating_grid(
     key_prefix: str,
     question: str,
@@ -695,6 +765,72 @@ def render_robot_summary_grid(
     )
 
 
+def render_explanation_grid(
+    options: list[Option],
+    summary: dict[str, Any],
+    proposed_response: str,
+) -> None:
+    cards = []
+    response = response_html(proposed_response)
+    for option in options:
+        body = study_2b_q3b_body(summary, option.method)
+        explanation = html.escape(body["task_reason"])
+        movement = html.escape(movement_plan_sentence(body["nav_constraints"], body["nav_reason"]))
+        cards.append(
+            f"""
+<section class="robot-explanation-card">
+  <h4>Robot {html.escape(option.label)}</h4>
+  <p><strong>Robot response:</strong> {response}</p>
+  <p><strong>Explanation:</strong> {explanation}</p>
+  <p><strong>Movement Plan:</strong> {movement}</p>
+</section>
+"""
+        )
+    st.markdown(
+        f"""
+<style>
+.robot-explanation-grid {{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 18px 0 30px;
+}}
+.robot-explanation-card {{
+  min-height: 330px;
+  padding: 20px 22px;
+  border: 1px solid rgba(128, 132, 149, 0.42);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}}
+.robot-explanation-card h4 {{
+  margin: 0 0 4px;
+  font-size: 1.12rem;
+  font-weight: 750;
+}}
+.robot-explanation-card p {{
+  margin: 0;
+  line-height: 1.52;
+}}
+@media (max-width: 900px) {{
+  .robot-explanation-grid {{
+    grid-template-columns: 1fr;
+  }}
+  .robot-explanation-card {{
+    min-height: auto;
+  }}
+}}
+</style>
+<div class="robot-explanation-grid">
+{''.join(cards)}
+</div>
+""",
+        unsafe_allow_html=True,
+    )
+
+
 def render_intro_page(scene_count: int) -> str | None:
     st.title("Robot Reasoning of Proactive Task and Navigation Decision")
     st.header("Background")
@@ -724,7 +860,7 @@ def render_intro_page(scene_count: int) -> str | None:
             """
 1. Images showing the overall situation and the highlighted person-object interaction.
 2. Short text descriptions of what the robot thinks may be happening.
-3. Possible robot actions, reasons, target places, and routes.
+3. Possible robot responses, reasons, target places, and routes.
 4. Rating and ranking questions about the robot's reasoning and navigation choices.
 """
         )
@@ -734,15 +870,7 @@ def render_intro_page(scene_count: int) -> str | None:
         )
     with st.container(border=True):
         st.write("When answering the study questions, you will see these main robot response options:")
-        st.markdown(
-            """
-- **Continue:** keep going as planned; no special response is needed.
-- **Monitor:** keep observing because the situation may become relevant, but do not act yet.
-- **Avoid:** adjust its path or behaviour to avoid getting in the way.
-- **Assist:** offer or provide help if help seems useful.
-- **Warn:** alert someone if there may be a risk, problem, or safety concern.
-"""
-        )
+        st.markdown(response_definitions_markdown())
     st.header("Information Sheet and Consent")
     st.markdown(
         "Please read the consent form before continuing: "
@@ -1075,17 +1203,33 @@ def render_study_2a(trial_dir: Path, participant_id: str, bundle_id: str, task_l
 def render_study_1(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q2: Does the Robot Understand the Scene?")
     parsed = read_json(trial_dir / "study_1_proposed_hoir1_parsed_output.json")
-    show_image(abs_if_exists(trial_dir, "study_1_proposed_hoir1_crop.png"), "Highlighted person and object", width=420)
+    show_image(
+        abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_crop_overlay_refined.png")
+        or abs_if_exists(trial_dir, "study_1_proposed_hoir1_crop.png"),
+        "Highlighted person and object",
+        width=420,
+    )
 
     questions = [
         ("Q2_1_action", f"The robot says the person is doing: {important_auto(display_value(parsed.get('verb class')))}. How reasonable is this?", LIKERT_AGREE),
         ("Q2_2_person_state", f"The robot says the person's state is: {important_auto(display_value(parsed.get('human state')))}. How reasonable is this?", LIKERT_AGREE),
         ("Q2_3_object_state", f"The robot says the object's state is: {important_auto(display_value(parsed.get('object property')))}. How reasonable is this?", LIKERT_AGREE),
-        ("Q2_4_help_needed", f"The robot gives the help-needed score as: {score_text(parsed.get('need level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_5_attention_needed", f"The robot gives the attention-needed score as: {score_text(parsed.get('risk level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_6_concern", f"The robot gives the concern score as: {score_text(parsed.get('hazard level', ''))}. Do you agree with this score?", LIKERT_AGREE),
-        ("Q2_7_main_concern", f"The robot says the main thing to pay attention to is: {important_auto(display_value(parsed.get('risk type')))}. How reasonable is this?", LIKERT_AGREE),
-        ("Q2_8_overall", "Overall, the robot understood this person-object situation well enough to decide what to do next.", LIKERT_AGREE),
+        (
+            "Q2_4_help_needed",
+            f"The robot thinks: {important_auto(natural_score_label(parsed.get('need level', ''), HELP_NEEDED_LABELS))}. How reasonable is this?",
+            LIKERT_AGREE,
+        ),
+        (
+            "Q2_5_attention_needed",
+            f"The robot thinks: {important_auto(natural_score_label(parsed.get('risk level', ''), ATTENTION_NEEDED_LABELS))}. How reasonable is this?",
+            LIKERT_AGREE,
+        ),
+        (
+            "Q2_6_concern",
+            f"The robot thinks: {important_auto(natural_score_label(parsed.get('hazard level', ''), CONCERN_LABELS))}. How reasonable is this?",
+            LIKERT_AGREE,
+        ),
+        ("Q2_7_overall", "Overall, the robot understood this person-object situation well enough to choose a robot response.", LIKERT_AGREE),
     ]
     rows: list[dict[str, Any]] = []
     for qid, text, scale in questions:
@@ -1225,12 +1369,10 @@ def add_score_question(
 
 
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
-    st.header("Q3: Robot Decision")
+    st.header("Q3: Which Robot Response Fits Best?")
     show_target_hoi_scene(trial_dir)
-    st.write(
-        "Each robot gives one possible response for the same scene. "
-        "First, judge whether the robot reacts at the right level and chooses a good action."
-    )
+    st.markdown("**Robot response options:**")
+    st.markdown(response_definitions_markdown())
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
         ("A", "b1_vlm_without_dsg"),
@@ -1268,62 +1410,12 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     )
     task_display_order = option_display_order(selected_task_options)
 
-    st.subheader("Q3A: Which Selected Task Makes the Best Decision?")
-    st.write(
-        "First, look at all robot tasks selected for this scene. If several robots chose the same task, "
-        "that task appears only once here. Judge each selected task by itself."
-    )
-    for row_start in range(0, len(selected_task_options), 2):
-        cols = st.columns(2, vertical_alignment="top")
-        for col, option in zip(cols, selected_task_options[row_start:row_start + 2]):
-            with col:
-                with st.container(border=True):
-                    st.subheader(f"Selected task: {option.label}")
-                    st.markdown(
-                        f"**Robot task:** {important_text(option.label, color=RED)}",
-                        unsafe_allow_html=True,
-                    )
-                    reaction_question = (
-                        "How appropriate is the robot's reaction level for this scene? "
-                        "Use underreacts if the robot should do more, and overreacts if the robot does too much."
-                    )
-                    reaction_answer = st.radio(
-                        reaction_question,
-                        LIKERT_UNDER_OVER_REACT,
-                        index=None,
-                        key=f"{trial_dir.name}_Q3A_1_reaction_level_task_{option.label}",
-                        horizontal=True,
-                    )
-                    add_rating_row(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q3A_1_reaction_level",
-                        question_text=reaction_question,
-                        option=option,
-                        answer=reaction_answer,
-                        display_order=task_display_order,
-                    )
-                    add_score_question(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q3A_2_action_decision_quality",
-                        question_text="How good is this selected task for this scene? 1 means very poor, and 10 means excellent.",
-                        option=option,
-                        display_order=task_display_order,
-                    )
-
     decision_ranking_answers = ranking_control(
-        f"{trial_dir.name}_Q3A_0_selected_task_quality_rank",
-        "Rank all selected tasks by overall decision quality.",
+        f"{trial_dir.name}_Q3A_0_response_rank",
+        "Rank these robot responses from best to worst for this scene.",
         selected_task_options,
-        card_label="Task",
-        hint="Choose each selected task once. Rank 1 means the best task decision for this scene.",
+        card_label="Response",
+        hint="Choose each response once. Rank 1 means the best response for this scene.",
     )
     rows.extend(
         response_rows(
@@ -1331,13 +1423,42 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q3A_0_selected_task_quality_rank",
-            question_text="Rank all selected tasks by overall decision quality.",
+            question_id="Q3A_0_response_rank",
+            question_text="Rank these robot responses from best to worst for this scene.",
             answers=decision_ranking_answers,
             option_methods={o.label: o.method for o in selected_task_options},
             display_order=task_display_order,
         )
     )
+
+    reaction_question = (
+        "How appropriate is this robot response level for this scene? "
+        "Use underreacts if the robot should do more, and overreacts if the robot does too much."
+    )
+    for option in selected_task_options:
+        st.markdown(
+            f"**Robot response:** {response_html(option.label)}",
+            unsafe_allow_html=True,
+        )
+        reaction_answer = st.radio(
+            reaction_question,
+            LIKERT_UNDER_OVER_REACT,
+            index=None,
+            key=f"{trial_dir.name}_Q3A_1_reaction_level_response_{option.label}",
+            horizontal=True,
+        )
+        add_rating_row(
+            rows,
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q3A_1_reaction_level",
+            question_text=reaction_question,
+            option=option,
+            answer=reaction_answer,
+            display_order=task_display_order,
+        )
 
     st.divider()
     st.header("Q4A: High-Level Natural Language Planning")
@@ -1345,82 +1466,26 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
-Now all robots use the same robot decision and describe why this decision makes sense and how the robot should move.
+Now all robots use the same robot response and give an explanation and movement plan.
 
-**Robot action:** {important_text(proposed_body['task'], color=RED)}
+**Robot response:** {response_html(proposed_body['task'])}
 
-Please judge the explanation quality and whether the movement plan supports the robot's task.
+Please judge the explanation quality and whether the movement plan supports this robot response.
 """,
         unsafe_allow_html=True,
     )
-    for row_start in range(0, len(display_options), 2):
-        cols = st.columns(2, vertical_alignment="top")
-        for col, option in zip(cols, display_options[row_start:row_start + 2]):
-            body = study_2b_q3b_body(summary, option.method)
-            with col:
-                with st.container(border=True):
-                    st.subheader(f"Robot {option.label}")
-                    st.markdown(
-                        f"""
-**Robot action:** {important_text(proposed_body['task'], color=RED)}
-
-**Explanation:** {html.escape(body['task_reason'])}
-
-**Movement Plan:** {html.escape(movement_plan_sentence(body['nav_constraints'], body['nav_reason']))}
-""",
-                        unsafe_allow_html=True,
-                    )
-                    add_score_question(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q4A_1_task_movement_plan_match",
-                        question_text="How well does this movement plan support the robot's task? 1 means not well at all, and 10 means extremely well.",
-                        option=option,
-                        display_order=display_order,
-                    )
-                    add_score_question(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q4A_2_explanation_clarity",
-                        question_text="How clear is this explanation? 1 means not clear at all, and 10 means extremely clear.",
-                        option=option,
-                        display_order=display_order,
-                    )
-                    add_score_question(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q4A_3_scene_information_use",
-                        question_text="How well does this explanation use the scene information? 1 means not well at all, and 10 means extremely well.",
-                        option=option,
-                        display_order=display_order,
-                    )
-                    add_score_question(
-                        rows,
-                        participant_id=participant_id,
-                        bundle_id=bundle_id,
-                        trial_dir=trial_dir,
-                        task_label=task_label,
-                        question_id="Q4A_4_trust",
-                        question_text="Based on this explanation, how much would you trust this robot's reasoning? 1 means not at all, and 10 means completely.",
-                        option=option,
-                        display_order=display_order,
-                    )
+    render_explanation_grid(display_options, summary, proposed_body["task"])
 
     movement_ranking_answers = ranking_control(
-        f"{trial_dir.name}_Q4A_0_task_movement_plan_match_rank",
-        "Rank the four robots by task-movement plan matching quality.",
+        f"{trial_dir.name}_Q4A_0_movement_plan_support_rank",
+        f"Rank the robots by how well their movement plan supports this robot response: {response_plain(proposed_body['task'])}.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the best task-movement plan match for this scene.",
+        hint="Choose each robot once. Rank 1 means the strongest movement-plan support.",
+        question_markdown=(
+            f"**Movement plan support**  \n"
+            f"Rank the robots by how well their movement plan supports this robot response: {response_html(proposed_body['task'])}."
+        ),
     )
     rows.extend(
         response_rows(
@@ -1428,19 +1493,20 @@ Please judge the explanation quality and whether the movement plan supports the 
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q4A_0_task_movement_plan_match_rank",
-            question_text="Rank the four robots by task-movement plan matching quality.",
+            question_id="Q4A_0_movement_plan_support_rank",
+            question_text=f"Rank the robots by how well their movement plan supports this robot response: {response_plain(proposed_body['task'])}.",
             answers=movement_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
         )
     )
     explanation_ranking_answers = ranking_control(
-        f"{trial_dir.name}_Q4A_0_explanation_quality_rank",
-        "Rank the four robots by explanation quality.",
+        f"{trial_dir.name}_Q4A_0_explanation_clarity_rank",
+        "Rank the robots by how clear their explanation is.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the best explanation quality for this scene.",
+        hint="Choose each robot once. Rank 1 means the clearest explanation.",
+        question_markdown="**Explanation clarity**  \nRank the robots by how clear their explanation is.",
     )
     rows.extend(
         response_rows(
@@ -1448,9 +1514,51 @@ Please judge the explanation quality and whether the movement plan supports the 
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q4A_0_explanation_quality_rank",
-            question_text="Rank the four robots by explanation quality.",
+            question_id="Q4A_0_explanation_clarity_rank",
+            question_text="Rank the robots by how clear their explanation is.",
             answers=explanation_ranking_answers,
+            option_methods={o.label: o.method for o in options},
+            display_order=display_order,
+        )
+    )
+    scene_info_ranking_answers = ranking_control(
+        f"{trial_dir.name}_Q4A_0_scene_information_use_rank",
+        "Rank the robots by how well their explanation uses the scene information.",
+        display_options,
+        card_label="Robot",
+        hint="Choose each robot once. Rank 1 means the best use of the scene information.",
+        question_markdown="**Scene information use**  \nRank the robots by how well their explanation uses the scene information.",
+    )
+    rows.extend(
+        response_rows(
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q4A_0_scene_information_use_rank",
+            question_text="Rank the robots by how well their explanation uses the scene information.",
+            answers=scene_info_ranking_answers,
+            option_methods={o.label: o.method for o in options},
+            display_order=display_order,
+        )
+    )
+    trust_ranking_answers = ranking_control(
+        f"{trial_dir.name}_Q4A_0_trust_rank",
+        "Rank the robots by how much you would trust their reasoning.",
+        display_options,
+        card_label="Robot",
+        hint="Choose each robot once. Rank 1 means the reasoning you would trust most.",
+        question_markdown="**Trust**  \nRank the robots by how much you would trust their reasoning.",
+    )
+    rows.extend(
+        response_rows(
+            participant_id=participant_id,
+            bundle_id=bundle_id,
+            trial_dir=trial_dir,
+            task_label=task_label,
+            question_id="Q4A_0_trust_rank",
+            question_text="Rank the robots by how much you would trust their reasoning.",
+            answers=trust_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
         )
@@ -1460,23 +1568,14 @@ Please judge the explanation quality and whether the movement plan supports the 
 
 def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q4B: Low-Level Updated Goal and Route")
-    task_gloss = {
-        "warn": "warn or alert people",
-        "assist": "help the person",
-        "monitor": "monitor (observe the situation)",
-        "avoid": "avoid the area",
-        "continue": "continue normally",
-    }
-    task_text = task_gloss.get(task_label, task_label)
-    task_html = important_text(task_text, color=RED)
+    response_text = response_plain(task_label)
+    response_markup = response_html(task_label)
     st.markdown(
         f"""
-The robot's task in this scene is to {task_html}.
+The robot response in this scene is: {response_markup}.
 
 The grey goal-path shows where the robot originally planned to go and how it originally planned to get there.
-Each robot shows a changed target place and route. Please evaluate each update from two perspectives:
-whether it supports the robot's task, and whether the target place and route follow normal social expectations
-around people.
+Each robot shows an updated target place and route in the RGB image.
 """,
         unsafe_allow_html=True,
     )
@@ -1495,114 +1594,51 @@ around people.
     )
     display_order = option_display_order(display_options)
     visuals = {
-        "A": (
-            abs_if_exists(trial_dir, "study_3b_option_a_rgb_traj.png"),
-            abs_if_exists(trial_dir, "study_3b_option_a_bev.png"),
-        ),
-        "B": (
-            abs_if_exists(trial_dir, "study_3b_option_b_rgb_traj.png"),
-            abs_if_exists(trial_dir, "study_3b_option_b_bev.png"),
-        ),
-        "C": (
-            abs_if_exists(trial_dir, "study_3b_option_c_rgb_traj.png"),
-            abs_if_exists(trial_dir, "study_3b_option_c_bev.png"),
-        ),
+        "A": abs_if_exists(trial_dir, "study_3b_option_a_rgb_traj.png"),
+        "B": abs_if_exists(trial_dir, "study_3b_option_b_rgb_traj.png"),
+        "C": abs_if_exists(trial_dir, "study_3b_option_c_rgb_traj.png"),
     }
     rows: list[dict[str, Any]] = []
+    route_cards: list[tuple[str, Path | None, str]] = []
     for option in display_options:
-        st.subheader(f"Robot {option.label}")
-        rgb_path, bev_path = visuals[option.label]
         route_color = ROBOT_ROUTE_COLORS.get(option.label, "colored")
-        show_rgb_bev_pair(
-            trial_dir,
-            rgb_path,
-            bev_path,
-            f"Robot {option.label}",
-            rgb_caption_markdown=(
-                f"Robot {option.label}: RGB view. This is what the robot sees from the red start position. "
-                "The grey goal-path is where the robot originally planned to go. "
-                f"After seeing this scene, the robot decides to {task_html} and updates its navigation "
-                f"decision to the {html.escape(route_color)} path."
+        route_cards.append(
+            (
+                f"Robot {option.label}",
+                visuals[option.label],
+                (
+                    f"Robot {option.label}: RGB view. The grey goal-path is where the robot originally planned to go. "
+                    f"After seeing this scene, the robot uses the response {response_markup} and updates its goal and route "
+                    f"to the {html.escape(route_color)} path."
+                ),
+            )
+        )
+    route_cards.append(
+        (
+            "All robots together",
+            abs_if_exists(trial_dir, "study_3b_goal_path_rgb_overlay_refined.png"),
+            (
+                "All robots together: RGB view. The grey goal-path is the robot's original plan. "
+                "The orange, cyan, and green paths show the updated goal and route from Robot A, Robot B, and Robot C."
             ),
-            bev_caption_markdown=(
-                f"Robot {option.label}: map view. The red point and arrow show the robot's current position "
-                "and facing direction. Blue points and arrows show people and how they are moving. "
-                f"The grey path is the robot's original plan; the {html.escape(route_color)} path is Robot "
-                f"{option.label}'s updated navigation decision."
-            ),
         )
-
-        support_question = f"How well does this updated goal and route support the robot's task: {task_text}?"
-        st.markdown(
-            f"**How well does this updated goal and route support the robot's task: {task_html}?**",
-            unsafe_allow_html=True,
-        )
-        support_answer = st.radio(
-            "Task support rating",
-            LIKERT_POOR_WELL,
-            index=None,
-            key=f"{trial_dir.name}_Q4B_1_task_support_{option.label}",
-            horizontal=True,
-            label_visibility="collapsed",
-        )
-        add_rating_row(
-            rows,
-            participant_id=participant_id,
-            bundle_id=bundle_id,
-            trial_dir=trial_dir,
-            task_label=task_label,
-            question_id="Q4B_1_task_support",
-            question_text=support_question,
-            option=option,
-            answer=support_answer,
-            display_order=display_order,
-        )
-
-        goal_answer = st.radio(
-            "How socially appropriate is the updated target place around the person?",
-            LIKERT_INAPPROPRIATE_APPROPRIATE,
-            index=None,
-            key=f"{trial_dir.name}_Q4B_2_goal_appropriateness_{option.label}",
-            horizontal=True,
-        )
-        add_rating_row(
-            rows,
-            participant_id=participant_id,
-            bundle_id=bundle_id,
-            trial_dir=trial_dir,
-            task_label=task_label,
-            question_id="Q4B_2_goal_appropriateness",
-            question_text="How socially appropriate is the updated target place around the person?",
-            option=option,
-            answer=goal_answer,
-            display_order=display_order,
-        )
+    )
+    for row_start in range(0, len(route_cards), 2):
+        cols = st.columns(2, vertical_alignment="top")
+        for col, (title, path, caption) in zip(cols, route_cards[row_start:row_start + 2]):
+            with col:
+                show_rgb_route_card(path, title, caption)
 
     st.subheader("Overall Ranking")
-    show_rgb_bev_pair(
-        trial_dir,
-        abs_if_exists(trial_dir, "study_3b_goal_path_rgb_overlay_refined.png"),
-        abs_if_exists(trial_dir, "study_3b_goal_path_reference_map_refined.png"),
-        "All robots together",
-        rgb_caption=(
-            "All robots together: RGB view. The robot starts at the red marker and sees the scene on the left. "
-            "The grey goal-path is its original plan. The orange, cyan, and green paths show the updated "
-            "navigation decisions from Robot A, Robot B, and Robot C."
-        ),
-        bev_caption=(
-            "All robots together: map view. Red shows the robot's current position and facing direction. "
-            "Blue points and arrows show people and how they are moving. Grey is the original plan; "
-            "orange, cyan, and green are the updated navigation decisions from the three robots."
-        ),
-    )
     task_support_answers = ranking_control(
-        f"{trial_dir.name}_Q4B_3_task_support_rank",
-        f"Rank the three robots by how well the updated goal and route support the task: {task_text}.",
+        f"{trial_dir.name}_Q4B_3_response_support_rank",
+        f"Rank the three robots by how well the updated goal and route support this robot response: {response_text}.",
         display_options,
         card_label="Robot",
-        hint="Focus only on whether the updated goal and route help the robot complete its task. Rank 1 means the strongest task support.",
+        hint="Choose each robot once. Rank 1 means the updated goal and route best support the response.",
         question_markdown=(
-            f"**Rank the three robots by task support for: {task_html}.**"
+            f"**Response support ranking**  \n"
+            f"Rank the three robots by how well the updated goal and route support this robot response: {response_markup}."
         ),
     )
     rows.extend(
@@ -1611,8 +1647,8 @@ around people.
             bundle_id=bundle_id,
             trial_dir=trial_dir,
             task_label=task_label,
-            question_id="Q4B_3_task_support_rank",
-            question_text=f"Rank the three robots by how well the updated goal and route support the task: {task_text}.",
+            question_id="Q4B_3_response_support_rank",
+            question_text=f"Rank the three robots by how well the updated goal and route support this robot response: {response_text}.",
             answers=task_support_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
@@ -1623,12 +1659,10 @@ around people.
         "Rank the three robots by social appropriateness.",
         display_options,
         card_label="Robot",
-        hint=(
-            "Focus only on whether the updated target place and route follow normal social expectations "
-            "around people. Rank 1 means the most socially appropriate update."
-        ),
+        hint="Choose each robot once. Rank 1 means the update best follows normal social expectations around people.",
         question_markdown=(
-            "**Rank the three robots by social appropriateness of the updated goal and route.**"
+            "**Social appropriateness ranking**  \n"
+            "Rank the three robots by how well the updated goal and route follow normal social expectations around people."
         ),
     )
     rows.extend(
