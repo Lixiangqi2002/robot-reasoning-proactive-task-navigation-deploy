@@ -120,18 +120,18 @@ HELP_NEEDED_LABELS = {
     5: "the person clearly needs help",
 }
 ATTENTION_NEEDED_LABELS = {
-    1: "the robot probably does not need to keep watching this situation",
-    2: "the robot may briefly keep an eye on this situation",
-    3: "the robot should keep watching because the situation may become relevant",
-    4: "the robot should pay close attention because the situation may change soon",
-    5: "the robot should keep very close watch because the situation may soon require a response",
+    1: "this situation looks routine and does not need extra attention",
+    2: "this situation may be worth noticing briefly",
+    3: "this situation is worth watching because it may become relevant",
+    4: "this situation deserves close attention because it may change soon",
+    5: "this situation strongly needs attention because the robot may need to respond soon",
 }
 CONCERN_LABELS = {
-    1: "there is no clear safety concern nearby",
-    2: "there may be a small safety concern nearby",
-    3: "there may be a possible safety concern nearby",
-    4: "there is likely a safety concern nearby",
-    5: "there is clearly a safety concern nearby",
+    1: "nothing nearby seems concerning",
+    2: "there may be a minor concern nearby",
+    3: "there may be a possible safety concern in this part of the scene",
+    4: "there is likely a safety concern in this part of the scene",
+    5: "there is a clear safety concern in this part of the scene",
 }
 
 DISPLAY_LABELS = {
@@ -283,6 +283,15 @@ def response_html(response: Any, *, color: str = RED) -> str:
 
 def response_definitions_markdown() -> str:
     return "\n".join(f"- **{name}** *({description})*" for name, description in RESPONSE_DEFINITIONS.items())
+
+
+def response_definitions_for_options(options: list[Option]) -> str:
+    seen: list[str] = []
+    for option in options:
+        key = task_plain_action(option.label)
+        if key not in seen:
+            seen.append(key)
+    return "\n".join(f"- **{key}** *({RESPONSE_DEFINITIONS[key]})*" for key in seen if key in RESPONSE_DEFINITIONS)
 
 
 def important_text(value: Any, *, color: str = GREEN) -> str:
@@ -1371,8 +1380,6 @@ def add_score_question(
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Which Robot Response Fits Best?")
     show_target_hoi_scene(trial_dir)
-    st.markdown("**Robot response options:**")
-    st.markdown(response_definitions_markdown())
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
         ("A", "b1_vlm_without_dsg"),
@@ -1409,6 +1416,8 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         section="Q3A_selected_tasks",
     )
     task_display_order = option_display_order(selected_task_options)
+    st.markdown("**Robot response options in this scene:**")
+    st.markdown(response_definitions_for_options(selected_task_options))
 
     decision_ranking_answers = ranking_control(
         f"{trial_dir.name}_Q3A_0_response_rank",
@@ -1544,11 +1553,11 @@ Please judge the explanation quality and whether the movement plan supports this
     )
     trust_ranking_answers = ranking_control(
         f"{trial_dir.name}_Q4A_0_trust_rank",
-        "Rank the robots by how much you would trust their reasoning.",
+        "Based on their explanation, rank the robots by how much you would trust their reasoning.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the reasoning you would trust most.",
-        question_markdown="**Trust**  \nRank the robots by how much you would trust their reasoning.",
+        hint="Choose each robot once. Rank 1 means the explanation that makes you trust the reasoning most.",
+        question_markdown="**Trust**  \nBased on their explanation, rank the robots by how much you would trust their reasoning.",
     )
     rows.extend(
         response_rows(
@@ -1557,7 +1566,7 @@ Please judge the explanation quality and whether the movement plan supports this
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4A_0_trust_rank",
-            question_text="Rank the robots by how much you would trust their reasoning.",
+            question_text="Based on their explanation, rank the robots by how much you would trust their reasoning.",
             answers=trust_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
@@ -1570,15 +1579,6 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     st.header("Q4B: Low-Level Updated Goal and Route")
     response_text = response_plain(task_label)
     response_markup = response_html(task_label)
-    st.markdown(
-        f"""
-The robot response in this scene is: {response_markup}.
-
-The grey goal-path shows where the robot originally planned to go and how it originally planned to get there.
-Each robot shows an updated target place and route in the RGB image.
-""",
-        unsafe_allow_html=True,
-    )
 
     options = [
         Option("A", "rule_nearest_goal"),
@@ -1607,7 +1607,7 @@ Each robot shows an updated target place and route in the RGB image.
                 f"Robot {option.label}",
                 visuals[option.label],
                 (
-                    f"Robot {option.label}: RGB view. The grey goal-path is where the robot originally planned to go. "
+                    f"Robot {option.label} view. The grey goal-path is where the robot originally planned to go. "
                     f"After seeing this scene, the robot uses the response {response_markup} and updates its goal and route "
                     f"to the {html.escape(route_color)} path."
                 ),
@@ -1618,7 +1618,7 @@ Each robot shows an updated target place and route in the RGB image.
             "All robots together",
             abs_if_exists(trial_dir, "study_3b_goal_path_rgb_overlay_refined.png"),
             (
-                "All robots together: RGB view. The grey goal-path is the robot's original plan. "
+                "All robots together view. The grey goal-path is the robot's original plan. "
                 "The orange, cyan, and green paths show the updated goal and route from Robot A, Robot B, and Robot C."
             ),
         )
