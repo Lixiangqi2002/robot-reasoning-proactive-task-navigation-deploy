@@ -14,11 +14,14 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 import streamlit as st
+import streamlit.components.v1 as components
 from PIL import Image
 
 
 APP_DIR = Path(__file__).resolve().parent
 DEFAULT_STATIC_DATA_ROOT = APP_DIR / "assets"
+ASSIGNMENT_ROOT = APP_DIR.parent / "participant_scene_assignments_6reviews"
+ASSIGNMENT_WIDE_CSV = ASSIGNMENT_ROOT / "participant_scene_assignment_wide.csv"
 DEFAULT_EXTERNAL_DATA_ROOT = Path("/media/selina-xiangqi/New Volume/dsg_dataset/user_study_data")
 DATA_ROOT = Path(
     os.environ.get(
@@ -37,6 +40,40 @@ GOOGLE_SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 DEFAULT_SUPABASE_TABLE = "user_study_responses"
+PUBLIC_APP_URL = "https://robot-reasoning-proactive-task-navigation.streamlit.app/"
+PROLIFIC_EXIT_CODES = {
+    "no_consent": {
+        "title": "Consent Not Provided",
+        "message": "You selected that you do not consent to participate, so the questionnaire will stop here.",
+        "code": "CJ8YVKNV",
+        "url": "https://app.prolific.com/submissions/complete?cc=CJ8YVKNV",
+    },
+    "against_robotics": {
+        "title": "Questionnaire Stopped",
+        "message": "Based on your response, this questionnaire will stop here.",
+        "code": "C1ELWANU",
+        "url": "https://app.prolific.com/submissions/complete?cc=C1ELWANU",
+    },
+    "failed_attention": {
+        "title": "Attention Check Not Passed",
+        "message": "The questionnaire will stop here because the attention check was not passed.",
+        "code": "C1ANEHPP",
+        "url": "https://app.prolific.com/submissions/complete?cc=C1ANEHPP",
+    },
+    "submitted": {
+        "title": "Questionnaire Complete",
+        "message": "Thank you. Your questionnaire responses have been submitted.",
+        "code": "CYFJ6WHB",
+        "url": "https://app.prolific.com/submissions/complete?cc=CYFJ6WHB",
+    },
+}
+ATTENTION_CHECK_PATTERN = [
+    "4 Agree",
+    "3 Not sure",
+    "5 Strongly agree",
+    "2 Disagree",
+    "4 Agree",
+]
 
 RANDOMIZE_OPTION_ORDER = os.environ.get("DSG_RANDOMIZE_OPTION_ORDER", "1") != "0"
 
@@ -193,6 +230,38 @@ def get_query_value(name: str, default: str = "") -> str:
     if isinstance(value, list):
         return value[0] if value else default
     return str(value)
+
+
+def get_bundle_id() -> str:
+    return get_query_value("bundle") or get_query_value("bundle_id")
+
+
+def load_bundle_assignments() -> dict[str, list[str]]:
+    if not ASSIGNMENT_WIDE_CSV.exists():
+        return {}
+    bundles: dict[str, list[str]] = {}
+    with ASSIGNMENT_WIDE_CSV.open("r", newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            participant_id = (row.get("participant_id") or "").strip()
+            if not participant_id:
+                continue
+            scene_dirs = [
+                (row.get(f"scene_{slot}_dir") or "").strip()
+                for slot in range(1, 6)
+            ]
+            bundles[participant_id] = [scene_dir for scene_dir in scene_dirs if scene_dir]
+    return bundles
+
+
+def trial_dirs_for_bundle(bundle_id: str) -> list[Path]:
+    assignments = load_bundle_assignments()
+    scene_names = assignments.get(bundle_id, [])
+    return [
+        DATA_ROOT / scene_name
+        for scene_name in scene_names
+        if (DATA_ROOT / scene_name).is_dir() and (DATA_ROOT / scene_name / "manifest.json").exists()
+    ]
 
 
 def selected_trial_dirs() -> list[Path]:
@@ -994,6 +1063,97 @@ def render_scene_directory(trial_dirs: list[Path]) -> None:
     )
 
 
+def render_exit_page(status: str) -> None:
+    info = PROLIFIC_EXIT_CODES.get(status, PROLIFIC_EXIT_CODES["submitted"])
+    st.title(info["title"])
+    st.write(info["message"])
+    st.markdown(f"Completion code: **{info['code']}**")
+    st.markdown(f"If you are not redirected automatically, [return to Prolific]({info['url']}).")
+    components.html(
+        f"""
+<script>
+setTimeout(function() {{
+  try {{
+    window.top.location.href = "{info['url']}";
+  }} catch (error) {{
+    window.location.href = "{info['url']}";
+  }}
+}}, 1200);
+</script>
+""",
+        height=0,
+    )
+    st.stop()
+
+
+def render_formal_intro_page() -> tuple[str | None, str | None]:
+    st.title("Robot Reasoning of Proactive Task and Navigation Decision")
+    st.header("Background")
+    with st.container(border=True):
+        st.write("Imagine seeing everyday human activities through a robot's eyes.")
+        st.write(
+            "The robot is moving through everyday places such as workplaces, public buildings, "
+            "storage areas, homes, or other shared indoor spaces. Around it, people are doing "
+            "ordinary things: carrying boxes, pushing carts, reaching for items, placing objects "
+            "down, or moving through a busy space."
+        )
+        st.write(
+            "A robot in this kind of space should not only follow a route. It also needs to notice "
+            "nearby people and objects, understand what may be happening, and choose a response that "
+            "fits the situation. For example, it may need to continue normally, keep watching, avoid "
+            "getting in the way, offer help, or warn someone about a possible risk."
+        )
+    with st.container(border=True):
+        st.write(
+            "This study evaluates robot reasoning and navigation decisions in short simulated scenes. "
+            "You will not be asked to teach the robot or create rules for it. Instead, you will review "
+            "what the robot says, what it chooses to do, and where it plans to move, then rate whether "
+            "those outputs look reasonable for the scene."
+        )
+        st.write("When answering the study questions, you will see these main robot response options:")
+        st.markdown(response_definitions_markdown())
+
+    st.header("Information Sheet and Consent")
+    st.markdown(
+        "Please read the consent form before continuing: "
+        "[Study information and consent form]"
+        "(https://docs.google.com/document/d/1jsRn9sQa50qqm864d-WQDgPj4AlHzSWwb_pth9uFji4/edit?usp=sharing)"
+    )
+    st.write("By selecting Yes, you confirm that:")
+    st.markdown(
+        """
+- You have read and understood the study information.
+- You voluntarily agree to participate.
+- You understand that you may stop participating at any time before submitting the questionnaire.
+- You agree that your survey responses will be stored securely and used only for research purposes.
+"""
+    )
+    st.write(
+        "If you do not agree to participate, select No and you will be directed to the exit page."
+    )
+    consent = st.radio(
+        "Do you consent to participate?",
+        ["Yes, I consent and wish to continue.", "No, I do not consent."],
+        index=None,
+        key="formal_consent_choice",
+    )
+
+    st.header("Attitude Toward Robots")
+    attitude = st.radio(
+        "Which statement best describes your attitude toward robots or autonomous technologies in everyday environments?",
+        [
+            "A. I am very interested in them and generally positive.",
+            "B. I am somewhat interested or open-minded.",
+            "C. I am neutral.",
+            "D. I am cautious but willing to evaluate them fairly.",
+            "E. I strongly dislike them and would prefer not to engage with this topic.",
+        ],
+        index=None,
+        key="formal_robot_attitude",
+    )
+    return consent, attitude
+
+
 def option_prompt_rating_list(
     key_prefix: str,
     question: str,
@@ -1714,6 +1874,152 @@ def render_trial(trial_dir: Path, participant_id: str, bundle_id: str) -> list[d
     return rows
 
 
+def render_attention_check(
+    trial_dir: Path,
+    participant_id: str,
+    bundle_id: str,
+    task_label: str,
+    scene_slot: int,
+) -> tuple[list[dict[str, Any]], bool | None]:
+    required_answer = ATTENTION_CHECK_PATTERN[(scene_slot - 1) % len(ATTENTION_CHECK_PATTERN)]
+    required_label = required_answer.split(" ", 1)[1]
+    question_text = (
+        f"To confirm that you are reading the questions carefully, please select {required_label} for this item."
+    )
+    st.divider()
+    st.markdown(
+        f"To confirm that you are reading the questions carefully, please select "
+        f"**{html.escape(required_label)}** for this item.",
+        unsafe_allow_html=True,
+    )
+    answer = st.radio(
+        "Attention check",
+        LIKERT_AGREE,
+        index=None,
+        key=f"{trial_dir.name}_attention_check_slot_{scene_slot}",
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    rows = response_rows(
+        participant_id=participant_id,
+        bundle_id=bundle_id,
+        trial_dir=trial_dir,
+        task_label=task_label,
+        question_id=f"attention_check_slot_{scene_slot}",
+        question_text=question_text,
+        answers={f"scene_{scene_slot}_attention_check": answer},
+        option_methods={f"scene_{scene_slot}_attention_check": f"required:{required_answer}"},
+        display_order={f"scene_{scene_slot}_attention_check": 1},
+    )
+    if answer is None:
+        return rows, None
+    return rows, answer == required_answer
+
+
+def render_formal_scene(
+    trial_dir: Path,
+    participant_id: str,
+    bundle_id: str,
+    scene_slot: int,
+) -> tuple[list[dict[str, Any]], bool | None]:
+    task_label = task_label_for(trial_dir)
+    rows: list[dict[str, Any]] = []
+    rows.extend(render_study_2a(trial_dir, participant_id, bundle_id, task_label))
+    st.divider()
+    rows.extend(render_study_1(trial_dir, participant_id, bundle_id, task_label))
+    st.divider()
+    rows.extend(render_study_2b(trial_dir, participant_id, bundle_id, task_label))
+    attention_rows, attention_ok = render_attention_check(
+        trial_dir,
+        participant_id,
+        bundle_id,
+        task_label,
+        scene_slot,
+    )
+    rows.extend(attention_rows)
+    st.divider()
+    rows.extend(render_study_3b(trial_dir, participant_id, bundle_id, task_label))
+    return rows, attention_ok
+
+
+def init_formal_session(bundle_id: str) -> None:
+    if st.session_state.get("formal_active_bundle") == bundle_id:
+        return
+    st.session_state.formal_active_bundle = bundle_id
+    st.session_state.formal_page = 0
+    st.session_state.formal_scene_rows = {}
+    st.session_state.formal_terminal_status = None
+
+
+def render_participant_bundle(bundle_id: str, trial_dirs: list[Path]) -> None:
+    init_formal_session(bundle_id)
+    terminal_status = st.session_state.get("formal_terminal_status")
+    if terminal_status:
+        render_exit_page(str(terminal_status))
+
+    participant_id = get_query_value("participant_id", bundle_id) or bundle_id
+    page = int(st.session_state.get("formal_page", 0))
+
+    if page == 0:
+        consent, attitude = render_formal_intro_page()
+        if st.button("Next", type="primary", key=f"{bundle_id}_intro_next"):
+            if consent == "No, I do not consent.":
+                st.session_state.formal_terminal_status = "no_consent"
+                st.rerun()
+            elif consent is None or attitude is None:
+                st.error("Please answer both questions before continuing.")
+            elif attitude == "E. I strongly dislike them and would prefer not to engage with this topic.":
+                st.session_state.formal_terminal_status = "against_robotics"
+                st.rerun()
+            else:
+                st.session_state.formal_page = 1
+                st.rerun()
+        return
+
+    if 1 <= page <= len(trial_dirs):
+        scene_slot = page
+        trial_dir = trial_dirs[scene_slot - 1]
+        st.markdown(f"<h1>Scene {scene_slot} of {len(trial_dirs)}</h1>", unsafe_allow_html=True)
+        st.write(
+            "Please review this scene carefully. Imagine this is what the robot sees as it moves "
+            "through the environment. The robot needs to understand what is happening and decide "
+            "what it should do next."
+        )
+        all_rows, attention_ok = render_formal_scene(trial_dir, participant_id, bundle_id, scene_slot)
+        st.divider()
+        if st.button("Next", type="primary", key=f"{bundle_id}_scene_{scene_slot}_next"):
+            missing = [row for row in all_rows if row["rating"] is None]
+            if missing:
+                st.error(f"Please answer all questions on this page before continuing. Missing: {len(missing)} ratings.")
+            elif attention_ok is False:
+                st.session_state.formal_terminal_status = "failed_attention"
+                st.rerun()
+            else:
+                st.session_state.formal_scene_rows[scene_slot] = all_rows
+                st.session_state.formal_page = scene_slot + 1
+                st.rerun()
+        return
+
+    st.title("Submit")
+    st.write("Please submit after answering all scenes.")
+    stored_rows_by_scene = st.session_state.get("formal_scene_rows", {})
+    if len(stored_rows_by_scene) < len(trial_dirs):
+        st.error("Some scene responses are missing. Please restart the questionnaire from your Prolific link.")
+        return
+    rows: list[dict[str, Any]] = []
+    for scene_slot in range(1, len(trial_dirs) + 1):
+        rows.extend(stored_rows_by_scene.get(scene_slot, []))
+    if st.button("Submit responses", type="primary", key=f"{bundle_id}_submit"):
+        try:
+            saved_to = append_rows(rows)
+        except Exception as exc:
+            st.error(f"Could not save responses: {exc}")
+            return
+        st.session_state.formal_saved_to = saved_to
+        st.session_state.formal_terminal_status = "submitted"
+        st.rerun()
+
+
 def sidebar_scene_choice(trial_dirs: list[Path]) -> int | None:
     query_index = get_query_value("scene_index")
     default_position = 0
@@ -1747,11 +2053,24 @@ def sidebar_scene_choice(trial_dirs: list[Path]) -> int | None:
 def main() -> None:
     st.set_page_config(page_title="Robot Reasoning of Proactive Task and Navigation Decision", layout="wide")
     participant_id = get_query_value("participant_id", "anonymous_participant")
-    bundle_id = get_query_value("bundle_id", "review_bundle")
+    formal_bundle_id = get_bundle_id()
+    bundle_id = formal_bundle_id or get_query_value("bundle_id", "review_bundle")
 
     if not DATA_ROOT.exists():
         st.error(f"Data root does not exist: {DATA_ROOT}")
         return
+
+    if formal_bundle_id:
+        trial_dirs = trial_dirs_for_bundle(formal_bundle_id)
+        if len(trial_dirs) != 5:
+            st.error(
+                f"Bundle {formal_bundle_id} was not found or does not contain 5 valid scenes. "
+                "Please check the Prolific study link."
+            )
+            return
+        render_participant_bundle(formal_bundle_id, trial_dirs)
+        return
+
     trial_dirs = selected_trial_dirs()
     if not trial_dirs:
         st.error("No trial directories found.")

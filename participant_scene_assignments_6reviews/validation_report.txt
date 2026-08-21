@@ -1,0 +1,9 @@
+seed: 20260821
+participants: 78
+scenes: 65
+scenes_per_participant: [5]
+reviews_per_scene: [6]
+total_assignments: 390
+task_totals: {'assist': 78, 'avoid': 78, 'continue': 78, 'monitor': 78, 'warn': 78}
+each_participant_has_one_of_each_task: True
+duplicate_scene_interactiveobj_violations: 0
