@@ -606,7 +606,10 @@ def show_target_hoi_scene(trial_dir: Path) -> None:
         abs_if_exists(trial_dir, "study_original_rgb_traj.png")
         or abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_overlay_rgb_refined.png")
         or abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"),
-        "Full scene with the robot's original goal and route",
+        (
+            "Full scene. The grey line shows the robot's original goal and route: "
+            "where the robot originally planned to go and how it originally planned to get there."
+        ),
     )
 
 
@@ -1392,10 +1395,6 @@ def add_score_question(
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Which Robot Response Fits Best?")
     show_target_hoi_scene(trial_dir)
-    st.markdown(
-        "The grey line shows the robot's **original goal and route**: where the robot originally planned to go, "
-        "and how it originally planned to get there before making any update."
-    )
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
         ("A", "b1_vlm_without_dsg"),
@@ -1432,15 +1431,19 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         section="Q3A_selected_tasks",
     )
     task_display_order = option_display_order(selected_task_options)
-    st.markdown("**Robot response options in this scene:**")
-    st.markdown(response_definitions_for_options(selected_task_options))
+    with st.container(border=True):
+        st.markdown("**Robot response options in this scene:**")
+        st.markdown(response_definitions_for_options(selected_task_options))
 
     decision_ranking_answers = ranking_control(
         f"{trial_dir.name}_Q3A_0_response_rank",
         "Rank these robot responses from best to worst for this scene.",
         selected_task_options,
         card_label="Response",
-        hint="Choose each response once. Rank 1 means the best response for this scene.",
+        question_markdown=(
+            "**Rank these robot responses from best to worst for this scene.** "
+            "Choose each response once. Rank 1 means the best response for this scene."
+        ),
     )
     rows.extend(
         response_rows(
@@ -1486,18 +1489,12 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         )
 
     st.divider()
-    st.header("Q4A: High-Level Natural Language Planning")
+    st.header("Q4: High-Level Natural Language Planning")
     show_target_hoi_scene(trial_dir)
-    st.markdown(
-        "The grey line shows the robot's **original goal and route**: where the robot originally planned to go, "
-        "and how it originally planned to get there before making any update."
-    )
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
-Now all robots use the same robot response and give an explanation and movement plan.
-
-**Robot response:** {response_html(proposed_body['task'])}
+Now all robots use the same robot response {response_html(proposed_body['task'])}, and give an **explanation** and **movement plan**.
 
 Please judge the explanation quality and whether the movement plan supports this robot response.
 """,
@@ -1510,10 +1507,10 @@ Please judge the explanation quality and whether the movement plan supports this
         f"Rank the robots by how well their movement plan supports this robot response: {response_plain(proposed_body['task'])}.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the strongest movement-plan support.",
         question_markdown=(
-            f"**Movement plan support**  \n"
-            f"Rank the robots by how well their movement plan supports this robot response: {response_html(proposed_body['task'])}."
+            f"**Movement plan support** "
+            f"Rank the robots by how well their movement plan supports this robot response: {response_html(proposed_body['task'])}. "
+            "Choose each robot once. Rank 1 means the strongest movement-plan support."
         ),
     )
     rows.extend(
@@ -1534,8 +1531,10 @@ Please judge the explanation quality and whether the movement plan supports this
         "Rank the robots by how clear their explanation is.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the clearest explanation.",
-        question_markdown="**Explanation clarity**  \nRank the robots by how clear their explanation is.",
+        question_markdown=(
+            "**Explanation clarity** "
+            "Rank the robots by how clear their explanation is. Choose each robot once. Rank 1 means the clearest explanation."
+        ),
     )
     rows.extend(
         response_rows(
@@ -1555,8 +1554,11 @@ Please judge the explanation quality and whether the movement plan supports this
         "Rank the robots by how well their explanation uses the scene information.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the best use of the scene information.",
-        question_markdown="**Scene information use**  \nRank the robots by how well their explanation uses the scene information.",
+        question_markdown=(
+            "**Scene information use** "
+            "Rank the robots by how well their explanation uses the scene information. "
+            "Choose each robot once. Rank 1 means the best use of the scene information."
+        ),
     )
     rows.extend(
         response_rows(
@@ -1576,8 +1578,11 @@ Please judge the explanation quality and whether the movement plan supports this
         "Based on their explanation, rank the robots by how much you would trust their reasoning.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the explanation that makes you trust the reasoning most.",
-        question_markdown="**Trust**  \nBased on their explanation, rank the robots by how much you would trust their reasoning.",
+        question_markdown=(
+            "**Trust** "
+            "Based on their explanation, rank the robots by how much you would trust their reasoning. "
+            "Choose each robot once. Rank 1 means the explanation that makes you trust the reasoning most."
+        ),
     )
     rows.extend(
         response_rows(
@@ -1596,7 +1601,7 @@ Please judge the explanation quality and whether the movement plan supports this
 
 
 def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
-    st.header("Q4B: Low-Level Updated Goal and Route")
+    st.header("Q5: Low-Level Updated Goal and Route")
     response_text = response_plain(task_label)
     response_markup = response_html(task_label)
 
@@ -1656,10 +1661,10 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_text}.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means that robot's Updated Goal and Route best supports the response.",
         question_markdown=(
-            f"**Response support ranking**  \n"
-            f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_markup}."
+            f"**Response support ranking** "
+            f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_markup}. "
+            "Choose each robot once. Rank 1 means that robot's Updated Goal and Route best supports the response."
         ),
     )
     rows.extend(
@@ -1680,10 +1685,10 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         "Rank the three robots by social appropriateness.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the update best follows normal social expectations around people.",
         question_markdown=(
-            "**Social appropriateness ranking**  \n"
-            "Rank the three robots by how well each Updated Goal and Route follows normal social expectations around people."
+            "**Social appropriateness ranking** "
+            "Rank the three robots by how well each Updated Goal and Route follows normal social expectations around people. "
+            "Choose each robot once. Rank 1 means the update best follows normal social expectations around people."
         ),
     )
     rows.extend(
