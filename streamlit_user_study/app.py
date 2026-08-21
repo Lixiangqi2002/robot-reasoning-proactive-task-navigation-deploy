@@ -119,19 +119,14 @@ HELP_NEEDED_LABELS = {
     4: "the person likely needs help",
     5: "the person clearly needs help",
 }
-ATTENTION_NEEDED_LABELS = {
-    1: "this situation looks routine and does not need extra attention",
-    2: "this situation may be worth noticing briefly",
-    3: "this situation is worth watching because it may become relevant",
-    4: "this situation deserves close attention because it may change soon",
-    5: "this situation strongly needs attention because the robot may need to respond soon",
-}
-CONCERN_LABELS = {
-    1: "nothing nearby seems concerning",
-    2: "there may be a minor concern nearby",
-    3: "there may be a possible safety concern in this part of the scene",
-    4: "there is likely a safety concern in this part of the scene",
-    5: "there is a clear safety concern in this part of the scene",
+SAFETY_AWARENESS_LABELS = {
+    (0, 0, "none"): "this human activity looks normal and does not seem to need extra safety attention",
+    (2, 2, "local_hazard"): "this human activity may raise a mild nearby safety concern, so the robot may need a little extra care if it passes nearby",
+    (2, 2, "object_motion_risk"): "the object may fall or move unstably during this activity, so the robot may need a little extra care if it passes nearby",
+    (2, 3, "local_hazard"): "this human activity may raise a safety concern, so the robot should be careful if it passes nearby",
+    (2, 3, "object_motion_risk"): "the object may fall or move unstably during this activity, so the robot should be careful if it passes nearby",
+    (3, 3, "local_hazard"): "this human activity may raise a safety concern, so the robot should be careful if it comes closer or passes through this area",
+    (5, 5, "local_hazard"): "this human activity clearly needs safety attention, so the robot should be very careful if it comes closer or passes through this area",
 }
 
 DISPLAY_LABELS = {
@@ -326,6 +321,27 @@ def natural_score_label(value: Any, labels: dict[int, str]) -> str:
         score = 1
     score = min(5, max(1, score))
     return labels[score]
+
+
+def score_int(value: Any, default: int = 0) -> int:
+    try:
+        return int(float(str(value).strip()))
+    except (TypeError, ValueError):
+        return default
+
+
+def safety_awareness_label(parsed: dict[str, Any]) -> str:
+    risk = score_int(parsed.get("risk level"))
+    hazard = score_int(parsed.get("hazard level"))
+    risk_type = str(parsed.get("risk type") or "none").strip()
+    key = (risk, hazard, risk_type)
+    if key in SAFETY_AWARENESS_LABELS:
+        return SAFETY_AWARENESS_LABELS[key]
+    if risk_type == "none" and risk == 0 and hazard == 0:
+        return SAFETY_AWARENESS_LABELS[(0, 0, "none")]
+    if risk_type == "object_motion_risk":
+        return "the object may fall or move unstably during this activity, so the robot should be careful if it passes nearby"
+    return "this human activity may need safety attention, so the robot should be careful if it passes nearby"
 
 
 def clean_participant_text(text: Any) -> str:
@@ -1229,16 +1245,11 @@ def render_study_1(trial_dir: Path, participant_id: str, bundle_id: str, task_la
             LIKERT_AGREE,
         ),
         (
-            "Q2_5_attention_needed",
-            f"The robot thinks: {important_auto(natural_score_label(parsed.get('risk level', ''), ATTENTION_NEEDED_LABELS))}. How reasonable is this?",
+            "Q2_5_safety_awareness",
+            f"The robot thinks: {important_auto(safety_awareness_label(parsed))}. How reasonable is this?",
             LIKERT_AGREE,
         ),
-        (
-            "Q2_6_concern",
-            f"The robot thinks: {important_auto(natural_score_label(parsed.get('hazard level', ''), CONCERN_LABELS))}. How reasonable is this?",
-            LIKERT_AGREE,
-        ),
-        ("Q2_7_overall", "Overall, the robot understood this person-object situation well enough to choose a robot response.", LIKERT_AGREE),
+        ("Q2_6_overall", "Overall, the robot understood this person-object situation well enough to choose a robot response.", LIKERT_AGREE),
     ]
     rows: list[dict[str, Any]] = []
     for qid, text, scale in questions:
