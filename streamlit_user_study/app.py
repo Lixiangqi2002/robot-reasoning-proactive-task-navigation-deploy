@@ -251,6 +251,11 @@ def get_bundle_id() -> str:
     return ""
 
 
+def is_bundle_preview_mode() -> bool:
+    value = get_query_value("preview") or get_query_value("bundle_preview")
+    return value.strip().lower() in {"1", "true", "yes", "y"}
+
+
 def load_bundle_assignments() -> dict[str, list[str]]:
     if not ASSIGNMENT_WIDE_CSV.exists():
         return {}
@@ -1969,7 +1974,7 @@ def init_formal_session(bundle_id: str) -> None:
     st.session_state.formal_terminal_status = None
 
 
-def render_participant_bundle(bundle_id: str, trial_dirs: list[Path]) -> None:
+def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview_mode: bool = False) -> None:
     init_formal_session(bundle_id)
     terminal_status = st.session_state.get("formal_terminal_status")
     if terminal_status:
@@ -1977,11 +1982,19 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path]) -> None:
 
     participant_id = get_query_value("participant_id", bundle_id) or bundle_id
     page = int(st.session_state.get("formal_page", 0))
+    if preview_mode:
+        st.info(
+            "Bundle preview mode is on. You can move through pages without answering required questions. "
+            "Preview responses will not be saved."
+        )
 
     if page == 0:
         consent, attitude = render_formal_intro_page()
         if st.button("Next", type="primary", key=f"{bundle_id}_intro_next"):
-            if consent == "No, I do not consent.":
+            if preview_mode:
+                st.session_state.formal_page = 1
+                st.rerun()
+            elif consent == "No, I do not consent.":
                 st.session_state.formal_terminal_status = "no_consent"
                 st.rerun()
             elif consent is None or attitude is None:
@@ -2007,9 +2020,9 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path]) -> None:
         st.divider()
         if st.button("Next", type="primary", key=f"{bundle_id}_scene_{scene_slot}_next"):
             missing = [row for row in all_rows if row["rating"] is None]
-            if missing:
+            if missing and not preview_mode:
                 st.error(f"Please answer all questions on this page before continuing. Missing: {len(missing)} ratings.")
-            elif attention_ok is False:
+            elif attention_ok is False and not preview_mode:
                 st.session_state.formal_terminal_status = "failed_attention"
                 st.rerun()
             else:
@@ -2027,6 +2040,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path]) -> None:
     rows: list[dict[str, Any]] = []
     for scene_slot in range(1, len(trial_dirs) + 1):
         rows.extend(stored_rows_by_scene.get(scene_slot, []))
+    if preview_mode:
+        if st.button("Finish preview", type="primary", key=f"{bundle_id}_preview_finish"):
+            st.success("Preview complete. No responses were saved.")
+        return
     if st.button("Submit responses", type="primary", key=f"{bundle_id}_submit"):
         try:
             saved_to = append_rows(rows)
@@ -2086,7 +2103,11 @@ def main() -> None:
                 "Please check the Prolific study link."
             )
             return
-        render_participant_bundle(formal_bundle_id, trial_dirs)
+        render_participant_bundle(
+            formal_bundle_id,
+            trial_dirs,
+            preview_mode=is_bundle_preview_mode(),
+        )
         return
 
     trial_dirs = selected_trial_dirs()
