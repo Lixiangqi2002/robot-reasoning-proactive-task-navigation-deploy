@@ -603,9 +603,10 @@ def show_image(
 
 def show_target_hoi_scene(trial_dir: Path) -> None:
     show_image(
-        abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_overlay_rgb_refined.png")
+        abs_if_exists(trial_dir, "study_original_rgb_traj.png")
+        or abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_overlay_rgb_refined.png")
         or abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"),
-        "Full scene with the target person-object interaction highlighted",
+        "Full scene with the robot's original goal-path",
     )
 
 
