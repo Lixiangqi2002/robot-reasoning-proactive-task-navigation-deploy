@@ -1508,7 +1508,6 @@ Please judge the explanation quality and whether the movement plan supports this
         display_options,
         card_label="Robot",
         question_markdown=(
-            f"**Movement plan support** "
             f"Rank the robots by how well their movement plan supports this robot response: {response_html(proposed_body['task'])}. "
             "Choose each robot once. Rank 1 means the strongest movement-plan support."
         ),
@@ -1532,7 +1531,6 @@ Please judge the explanation quality and whether the movement plan supports this
         display_options,
         card_label="Robot",
         question_markdown=(
-            "**Explanation clarity** "
             "Rank the robots by how clear their explanation is. Choose each robot once. Rank 1 means the clearest explanation."
         ),
     )
@@ -1555,7 +1553,6 @@ Please judge the explanation quality and whether the movement plan supports this
         display_options,
         card_label="Robot",
         question_markdown=(
-            "**Scene information use** "
             "Rank the robots by how well their explanation uses the scene information. "
             "Choose each robot once. Rank 1 means the best use of the scene information."
         ),
@@ -1579,7 +1576,6 @@ Please judge the explanation quality and whether the movement plan supports this
         display_options,
         card_label="Robot",
         question_markdown=(
-            "**Trust** "
             "Based on their explanation, rank the robots by how much you would trust their reasoning. "
             "Choose each robot once. Rank 1 means the explanation that makes you trust the reasoning most."
         ),
@@ -1662,7 +1658,6 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         display_options,
         card_label="Robot",
         question_markdown=(
-            f"**Response support ranking** "
             f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_markup}. "
             "Choose each robot once. Rank 1 means that robot's Updated Goal and Route best supports the response."
         ),
@@ -1686,7 +1681,6 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         display_options,
         card_label="Robot",
         question_markdown=(
-            "**Social appropriateness ranking** "
             "Rank the three robots by how well each Updated Goal and Route follows normal social expectations around people. "
             "Choose each robot once. Rank 1 means the update best follows normal social expectations around people."
         ),
