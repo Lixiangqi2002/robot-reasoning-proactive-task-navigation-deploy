@@ -543,6 +543,9 @@ def q3a_selected_task_options(
             continue
         task_sources.setdefault(task, []).append(source)
 
+    if set(task_sources) == {"continue"}:
+        task_sources["monitor"] = ["added_comparison_response"]
+
     return [
         Option(task, f"selected_task:{task};sources:{','.join(sources)}")
         for task, sources in task_sources.items()
