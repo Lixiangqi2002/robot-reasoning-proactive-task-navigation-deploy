@@ -606,7 +606,7 @@ def show_target_hoi_scene(trial_dir: Path) -> None:
         abs_if_exists(trial_dir, "study_original_rgb_traj.png")
         or abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_overlay_rgb_refined.png")
         or abs_if_exists(trial_dir, "study_1_proposed_full_rgb.png"),
-        "Full scene with the robot's original goal-path",
+        "Full scene with the robot's original goal and route",
     )
 
 
@@ -886,7 +886,7 @@ def render_intro_page(scene_count: int) -> str | None:
             """
 1. Images showing the overall situation and the highlighted person-object interaction.
 2. Short text descriptions of what the robot thinks may be happening.
-3. Possible robot responses, reasons, target places, and routes.
+3. Possible robot responses, reasons, and Updated Goal and Route examples.
 4. Rating and ranking questions about the robot's reasoning and navigation choices.
 """
         )
@@ -1392,6 +1392,10 @@ def add_score_question(
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Which Robot Response Fits Best?")
     show_target_hoi_scene(trial_dir)
+    st.markdown(
+        "The grey line shows the robot's **original goal and route**: where the robot originally planned to go, "
+        "and how it originally planned to get there before making any update."
+    )
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
         ("A", "b1_vlm_without_dsg"),
@@ -1484,6 +1488,10 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     st.divider()
     st.header("Q4A: High-Level Natural Language Planning")
     show_target_hoi_scene(trial_dir)
+    st.markdown(
+        "The grey line shows the robot's **original goal and route**: where the robot originally planned to go, "
+        "and how it originally planned to get there before making any update."
+    )
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
@@ -1619,9 +1627,10 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
                 f"Robot {option.label}",
                 visuals[option.label],
                 (
-                    f"Robot {option.label} view. The grey goal-path is where the robot originally planned to go. "
-                    f"After seeing this scene, the robot uses the response {response_markup} and updates its goal and route "
-                    f"to the {html.escape(route_color)} path."
+                    f"Robot {option.label} view. The grey line shows the robot's original goal and route: "
+                    f"where it originally planned to go, and how it originally planned to get there. "
+                    f"After seeing this scene, the robot uses the response {response_markup} and sets its "
+                    f"Updated Goal and Route to the option shown by the {html.escape(route_color)} line."
                 ),
             )
         )
@@ -1630,8 +1639,8 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             "All robots together",
             abs_if_exists(trial_dir, "study_3b_goal_path_rgb_overlay_refined.png"),
             (
-                "All robots together view. The grey goal-path is the robot's original plan. "
-                "The orange, cyan, and green paths show the updated goal and route from Robot A, Robot B, and Robot C."
+                "All robots together view. The grey line shows the robot's original goal and route. "
+                "The orange, cyan, and green lines show the Updated Goal and Route from Robot A, Robot B, and Robot C."
             ),
         )
     )
@@ -1644,13 +1653,13 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     st.subheader("Overall Ranking")
     task_support_answers = ranking_control(
         f"{trial_dir.name}_Q4B_3_response_support_rank",
-        f"Rank the three robots by how well the updated goal and route support this robot response: {response_text}.",
+        f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_text}.",
         display_options,
         card_label="Robot",
-        hint="Choose each robot once. Rank 1 means the updated goal and route best support the response.",
+        hint="Choose each robot once. Rank 1 means that robot's Updated Goal and Route best supports the response.",
         question_markdown=(
             f"**Response support ranking**  \n"
-            f"Rank the three robots by how well the updated goal and route support this robot response: {response_markup}."
+            f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_markup}."
         ),
     )
     rows.extend(
@@ -1660,7 +1669,7 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4B_3_response_support_rank",
-            question_text=f"Rank the three robots by how well the updated goal and route support this robot response: {response_text}.",
+            question_text=f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_text}.",
             answers=task_support_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
@@ -1674,7 +1683,7 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
         hint="Choose each robot once. Rank 1 means the update best follows normal social expectations around people.",
         question_markdown=(
             "**Social appropriateness ranking**  \n"
-            "Rank the three robots by how well the updated goal and route follow normal social expectations around people."
+            "Rank the three robots by how well each Updated Goal and Route follows normal social expectations around people."
         ),
     )
     rows.extend(
@@ -1684,7 +1693,7 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4B_4_social_appropriateness_rank",
-            question_text="Rank the three robots by social appropriateness of the updated goal and route.",
+            question_text="Rank the three robots by social appropriateness of the Updated Goal and Route.",
             answers=social_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
