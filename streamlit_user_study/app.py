@@ -8,6 +8,7 @@ import os
 import random
 import re
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -233,7 +234,21 @@ def get_query_value(name: str, default: str = "") -> str:
 
 
 def get_bundle_id() -> str:
-    return get_query_value("bundle") or get_query_value("bundle_id")
+    bundle_id = get_query_value("bundle") or get_query_value("bundle_id")
+    if bundle_id:
+        return bundle_id
+
+    # Be tolerant of links pasted as /bundle=P001 instead of ?bundle=P001.
+    context = getattr(st, "context", None)
+    url = str(getattr(context, "url", "") or "") if context is not None else ""
+    if not url:
+        return ""
+    parsed = urllib.parse.urlparse(url)
+    path = urllib.parse.unquote(parsed.path or "")
+    match = re.search(r"(?:^|/)bundle[=/]([A-Za-z0-9_-]+)(?:/)?$", path)
+    if match:
+        return match.group(1)
+    return ""
 
 
 def load_bundle_assignments() -> dict[str, list[str]]:
