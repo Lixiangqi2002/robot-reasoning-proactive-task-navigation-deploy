@@ -1414,6 +1414,11 @@ def render_study_2a(trial_dir: Path, participant_id: str, bundle_id: str, task_l
 
 def render_study_1(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q2: Does the Robot Understand the Scene?")
+    st.write(
+        "The robot looks at the highlighted person and object. "
+        "It then describes what is happening in the image. "
+        "Please rate whether the robot's description matches what you see."
+    )
     parsed = read_json(trial_dir / "study_1_proposed_hoir1_parsed_output.json")
     show_image(
         abs_if_exists(trial_dir, "study_2a_proposed_dsg_pair_crop_overlay_refined.png")
@@ -1577,6 +1582,12 @@ def add_score_question(
 
 def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Which Robot Response Fits Best?")
+    st.write(
+        "Each robot chooses one possible response for the same scene. "
+        "Please compare the responses and judge which robot fits the scene best. "
+        "Also consider whether each robot underreacts (does too little), "
+        "overreacts (does too much), or reacts at an appropriate level."
+    )
     show_target_hoi_scene(trial_dir)
     summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
     method_order = [
@@ -1677,9 +1688,9 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
-Now all robots use the same robot response {response_html(proposed_body['task'])}, and give an **explanation** and **movement plan**.
+Now all robots use the same robot response {response_html(proposed_body['task'])}.
 
-Please judge the explanation quality and whether the movement plan supports this robot response.
+Each robot gives a reason for its chosen response and a movement plan for how it should behave around the person and object. Please judge whether the explanation is clear, whether it uses the scene information well, whether the movement plan supports the response, and whether you think it is reliable and trustworthy.
 """,
         unsafe_allow_html=True,
     )
@@ -1781,6 +1792,11 @@ Please judge the explanation quality and whether the movement plan supports this
 
 def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q5: Low-Level Updated Goal and Route")
+    st.write(
+        "Each robot updates where it wants to go and how it plans to get there. "
+        "Please compare the updated routes and rate whether they help the robot complete its response "
+        "while moving naturally around people."
+    )
     response_text = response_plain(task_label)
     response_markup = response_html(task_label)
 
