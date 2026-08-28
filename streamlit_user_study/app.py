@@ -1086,9 +1086,18 @@ def render_scene_directory(trial_dirs: list[Path]) -> None:
     )
 
 
-def render_exit_page(status: str) -> None:
+def render_participant_ids(participant_id: str | None, bundle_id: str | None = None) -> None:
+    ids = [value for value in (participant_id, bundle_id) if value]
+    unique_ids = list(dict.fromkeys(ids))
+    if not unique_ids:
+        return
+    st.markdown(f"**Your IDs:** `{', '.join(unique_ids)}`")
+
+
+def render_exit_page(status: str, participant_id: str | None = None, bundle_id: str | None = None) -> None:
     info = PROLIFIC_EXIT_CODES.get(status, PROLIFIC_EXIT_CODES["submitted"])
     st.title(info["title"])
+    render_participant_ids(participant_id, bundle_id)
     st.write(info["message"])
     st.markdown(f"Completion code: **{info['code']}**")
     st.markdown(f"If you are not redirected automatically, [return to Prolific]({info['url']}).")
@@ -1992,12 +2001,12 @@ def init_formal_session(bundle_id: str) -> None:
 
 def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview_mode: bool = False) -> None:
     init_formal_session(bundle_id)
-    terminal_status = st.session_state.get("formal_terminal_status")
-    if terminal_status:
-        render_exit_page(str(terminal_status))
-
     participant_id = get_query_value("participant_id", bundle_id) or bundle_id
     page = int(st.session_state.get("formal_page", 0))
+    terminal_status = st.session_state.get("formal_terminal_status")
+    if terminal_status:
+        render_exit_page(str(terminal_status), participant_id, bundle_id)
+
     if preview_mode:
         st.info(
             "Bundle preview mode is on. You can move through pages without answering required questions. "
@@ -2005,6 +2014,7 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
         )
 
     if page == 0:
+        render_participant_ids(participant_id, bundle_id)
         consent, attitude = render_formal_intro_page()
         if st.button("Next", type="primary", key=f"{bundle_id}_intro_next"):
             if preview_mode:
