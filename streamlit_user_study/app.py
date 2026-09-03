@@ -160,6 +160,13 @@ RESPONSE_DEFINITIONS = {
     "assist": "move close enough and offer or provide help",
     "warn": "move to a suitable speaking distance and alert someone to prevent a risk, problem, or safety concern",
 }
+MOVEMENT_EXPECTATIONS = {
+    "continue": "let the robot keep going normally, without making an unnecessary detour or drawing extra attention",
+    "monitor": "let the robot keep watching the person-object interaction from a suitable distance, without getting involved too soon",
+    "avoid": "keep the robot out of the way, avoid blocking the person, and leave enough space around the activity",
+    "assist": "move the robot close enough to help or communicate, while still leaving enough space for the person",
+    "warn": "move the robot to a suitable place to alert people, while avoiding sudden or intrusive movement",
+}
 HELP_NEEDED_LABELS = {
     1: "the person does not seem to need help",
     2: "the person probably does not need help",
@@ -415,6 +422,11 @@ def response_html(response: Any, *, color: str = RED) -> str:
     if description:
         return f"{label} <em>({description})</em>"
     return label
+
+
+def movement_expectation(response: Any) -> str:
+    key = task_plain_action(display_value(response))
+    return MOVEMENT_EXPECTATIONS.get(key, f"help the robot carry out the response: {key}")
 
 
 def response_definitions_markdown() -> str:
@@ -2165,11 +2177,16 @@ def render_study_2b_reasoning(trial_dir: Path, participant_id: str, bundle_id: s
         for label, method in method_order
     }
     proposed_body = option_bodies["D"]
+    movement_guidance = movement_expectation(proposed_body["task"])
     st.markdown(
         f"""
 Now all robots use the same robot response {response_html(proposed_body['task'])}.
 
-Each robot gives a reason for its chosen response and a movement plan for how it should behave around the person and object. Please judge whether the explanation is clear, whether it uses the scene information well, whether the movement plan supports the response, and whether you think it is reliable and trustworthy.
+Each robot gives a reason for that response and a movement plan for how it should behave around the person and object.
+
+A good explanation should be easy to understand and should point to useful details in the scene, such as what the person is doing, what object is involved, or where the robot should be careful.
+
+For this response, a good movement plan should {html.escape(movement_guidance)}.
 """,
         unsafe_allow_html=True,
     )
@@ -2177,12 +2194,13 @@ Each robot gives a reason for its chosen response and a movement plan for how it
 
     movement_ranking_answers = ranking_control(
         f"{trial_dir.name}_Q4A_0_movement_plan_support_rank",
-        f"Rank the robots by how well their movement plan supports this robot response: {response_plain(proposed_body['task'])}.",
+        f"Rank the robots by how well their movement plan fits this robot response: {response_plain(proposed_body['task'])}.",
         display_options,
         card_label="Robot",
         question_markdown=(
-            f"Rank the robots by how well their movement plan supports this robot response: {response_html(proposed_body['task'])}. "
-            "Choose each robot once. Rank 1 means the strongest movement-plan support."
+            f"Rank the robots by how well their movement plan fits this robot response: {response_html(proposed_body['task'])}. "
+            f"For this response, a good movement plan should {html.escape(movement_guidance)}. "
+            "Choose each robot once. Rank 1 means the best-fitting movement plan."
         ),
     )
     rows.extend(
@@ -2192,7 +2210,7 @@ Each robot gives a reason for its chosen response and a movement plan for how it
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4A_0_movement_plan_support_rank",
-            question_text=f"Rank the robots by how well their movement plan supports this robot response: {response_plain(proposed_body['task'])}.",
+            question_text=f"Rank the robots by how well their movement plan fits this robot response: {response_plain(proposed_body['task'])}.",
             answers=movement_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
@@ -2222,12 +2240,13 @@ Each robot gives a reason for its chosen response and a movement plan for how it
     )
     scene_info_ranking_answers = ranking_control(
         f"{trial_dir.name}_Q4A_0_scene_information_use_rank",
-        "Rank the robots by how well their explanation uses the scene information.",
+        "Rank the robots by how well their explanation uses details from the scene.",
         display_options,
         card_label="Robot",
         question_markdown=(
-            "Rank the robots by how well their explanation uses the scene information. "
-            "Choose each robot once. Rank 1 means the best use of the scene information."
+            "Rank the robots by how well their explanation uses details from the scene. "
+            "Think about whether it mentions useful details such as the person's activity, the object, the person's state, or where the robot should be careful. "
+            "Choose each robot once. Rank 1 means the explanation that uses the scene details best."
         ),
     )
     rows.extend(
@@ -2237,7 +2256,7 @@ Each robot gives a reason for its chosen response and a movement plan for how it
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4A_0_scene_information_use_rank",
-            question_text="Rank the robots by how well their explanation uses the scene information.",
+            question_text="Rank the robots by how well their explanation uses details from the scene.",
             answers=scene_info_ranking_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
@@ -2279,13 +2298,19 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
 
 def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q5: Low-Level Updated Goal and Route")
-    st.write(
-        "Each robot updates where it wants to go and how it plans to get there. "
-        "Please compare the updated routes and rate whether they help the robot complete its response "
-        "while moving naturally around people."
-    )
     response_text = response_plain(task_label)
     response_markup = response_html(task_label)
+    movement_guidance = movement_expectation(task_label)
+    st.markdown(
+        f"""
+Each robot changes where it wants to go and how it plans to get there.
+
+Please compare the updated goal and route in two ways. First, does it help the robot carry out this response: {response_markup}? For this response, the updated goal and route should {html.escape(movement_guidance)}.
+
+Second, imagine you are the person in the scene. Which route would feel comfortable and natural around you?
+""",
+        unsafe_allow_html=True,
+    )
 
     options = [
         Option("A", "rule_nearest_goal"),
@@ -2340,12 +2365,13 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     st.subheader("Overall Ranking")
     task_support_answers = ranking_control(
         f"{trial_dir.name}_Q4B_3_response_support_rank",
-        f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_text}.",
+        f"Rank the three robots by how well each updated goal and route helps the robot carry out this response: {response_text}.",
         display_options,
         card_label="Robot",
         question_markdown=(
-            f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_markup}. "
-            "Choose each robot once. Rank 1 means that robot's Updated Goal and Route best supports the response."
+            f"First, does the updated goal and route help the robot carry out this response: {response_markup}? "
+            f"For this response, it should {html.escape(movement_guidance)}. "
+            "Choose each robot once. Rank 1 means the updated goal and route best fits what the robot is trying to do."
         ),
     )
     rows.extend(
@@ -2355,7 +2381,7 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4B_3_response_support_rank",
-            question_text=f"Rank the three robots by how well each Updated Goal and Route supports this robot response: {response_text}.",
+            question_text=f"Rank the three robots by how well each updated goal and route helps the robot carry out this response: {response_text}.",
             answers=task_support_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
