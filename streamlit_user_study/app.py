@@ -41,6 +41,7 @@ GOOGLE_SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 DEFAULT_SUPABASE_TABLE = "user_study_responses"
+DEFAULT_SUBMISSIONS_TABLE = "user_study_submissions"
 PUBLIC_APP_URL = "https://robot-reasoning-proactive-task-navigation.streamlit.app/"
 PROLIFIC_EXIT_CODES = {
     "no_consent": {
@@ -252,11 +253,41 @@ def get_bundle_id() -> str:
 
 
 def get_participant_id(bundle_id: str) -> str:
+    entered_pid = str(st.session_state.get("formal_prolific_pid", "")).strip()
+    if entered_pid:
+        return entered_pid
     for name in ("participant_id", "PROLIFIC_PID", "prolific_pid"):
         value = get_query_value(name).strip()
-        if value:
+        if value and "{{" not in value and "}}" not in value:
             return value
     return bundle_id
+
+
+def query_or_empty(name: str) -> str:
+    value = get_query_value(name).strip()
+    if "{{" in value or "}}" in value:
+        return ""
+    return value
+
+
+def safe_identifier_piece(value: str, fallback: str) -> str:
+    cleaned = re.sub(r"[^a-z0-9_]+", "_", value.strip().lower())
+    cleaned = cleaned.strip("_")
+    return cleaned or fallback
+
+
+def make_submission_id(bundle_id: str, prolific_pid: str) -> str:
+    study_id = query_or_empty("STUDY_ID")
+    session_id = query_or_empty("SESSION_ID")
+    seed = "|".join([bundle_id, prolific_pid, study_id, session_id])
+    digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()[:12]
+    return f"{bundle_id}_{digest}"
+
+
+def make_response_table_name(bundle_id: str, prolific_pid: str) -> str:
+    bundle_piece = safe_identifier_piece(bundle_id, "bundle")
+    digest = hashlib.sha256(f"{bundle_id}|{prolific_pid}|{query_or_empty('SESSION_ID')}".encode("utf-8")).hexdigest()[:12]
+    return f"user_study_responses_{bundle_piece}_{digest}"
 
 
 def is_bundle_preview_mode() -> bool:
@@ -1105,7 +1136,7 @@ def render_participant_ids(participant_id: str | None, bundle_id: str | None = N
 def render_exit_page(status: str, participant_id: str | None = None, bundle_id: str | None = None) -> None:
     info = PROLIFIC_EXIT_CODES.get(status, PROLIFIC_EXIT_CODES["submitted"])
     st.title(info["title"])
-    render_participant_ids(participant_id, bundle_id)
+    render_participant_ids(None, bundle_id)
     st.write(info["message"])
     st.markdown(f"Completion code: **{info['code']}**")
     st.markdown(f"If you are not redirected automatically, [return to Prolific]({info['url']}).")
@@ -1126,7 +1157,7 @@ setTimeout(function() {{
     st.stop()
 
 
-def render_formal_intro_page() -> tuple[str | None, str | None]:
+def render_formal_intro_page() -> tuple[str | None, str | None, str | None]:
     st.title("Robot Reasoning of Proactive Task and Navigation Decision")
     st.header("Background")
     with st.container(border=True):
@@ -1177,6 +1208,13 @@ def render_formal_intro_page() -> tuple[str | None, str | None]:
         index=None,
         key="formal_consent_choice",
     )
+    prolific_pid: str | None = None
+    if consent == "Yes, I consent and wish to continue.":
+        prolific_pid = st.text_input(
+            "Please enter your Prolific ID.",
+            value=query_or_empty("PROLIFIC_PID"),
+            key="formal_prolific_pid",
+        ).strip()
 
     st.header("Attitude Toward Robots")
     attitude = st.radio(
@@ -1191,7 +1229,7 @@ def render_formal_intro_page() -> tuple[str | None, str | None]:
         index=None,
         key="formal_robot_attitude",
     )
-    return consent, attitude
+    return consent, attitude, prolific_pid
 
 
 def option_prompt_rating_list(
@@ -1346,6 +1384,287 @@ def append_rows_to_supabase(rows: list[dict[str, Any]]) -> str | None:
     except urllib.error.URLError as exc:
         raise RuntimeError(f"Supabase insert failed: {exc.reason}") from exc
     return f"Supabase table '{table_name}'"
+
+
+def postgres_conninfo() -> str | None:
+    supabase_config = secrets_section("supabase")
+    conninfo = str(
+        supabase_config.get("db_url")
+        or supabase_config.get("database_url")
+        or supabase_config.get("url")
+        or ""
+    ).strip()
+    if conninfo.startswith(("postgresql://", "postgres://")):
+        return conninfo
+    return None
+
+
+def submission_context(bundle_id: str, prolific_pid: str) -> dict[str, str]:
+    prolific_pid_hash = hashlib.sha256(prolific_pid.encode("utf-8")).hexdigest()[:12]
+    return {
+        "submission_id": make_submission_id(bundle_id, prolific_pid),
+        "bundle_id": bundle_id,
+        "prolific_pid": prolific_pid,
+        "prolific_pid_hash": prolific_pid_hash,
+        "study_id": query_or_empty("STUDY_ID"),
+        "session_id": query_or_empty("SESSION_ID"),
+        "response_table_name": make_response_table_name(bundle_id, prolific_pid),
+    }
+
+
+def response_table_columns() -> list[str]:
+    return [
+        "submission_id",
+        "timestamp_utc",
+        "participant_id",
+        "prolific_pid",
+        "prolific_pid_hash",
+        "bundle_id",
+        "study_id",
+        "session_id",
+        "scene_slot",
+        "trial_id",
+        "task_label",
+        "question_id",
+        "question_text",
+        "option_label",
+        "method",
+        "display_order",
+        "rating",
+        "rating_label",
+    ]
+
+
+def enrich_rows_for_submission(
+    rows: list[dict[str, Any]],
+    context: dict[str, str],
+    scene_slot: int,
+) -> list[dict[str, Any]]:
+    enriched = []
+    for row in rows:
+        enriched_row = dict(row)
+        enriched_row.update(
+            {
+                "submission_id": context["submission_id"],
+                "participant_id": context["prolific_pid"],
+                "prolific_pid": context["prolific_pid"],
+                "prolific_pid_hash": context["prolific_pid_hash"],
+                "bundle_id": context["bundle_id"],
+                "study_id": context["study_id"],
+                "session_id": context["session_id"],
+                "scene_slot": scene_slot,
+            }
+        )
+        enriched.append(enriched_row)
+    return enriched
+
+
+def append_rows_to_postgres_submission(
+    rows: list[dict[str, Any]],
+    *,
+    bundle_id: str,
+    prolific_pid: str,
+    scene_slot: int,
+) -> str | None:
+    conninfo = postgres_conninfo()
+    if not conninfo:
+        return None
+
+    try:
+        import psycopg
+        from psycopg import sql
+    except ImportError as exc:
+        raise RuntimeError("PostgreSQL saving is configured, but psycopg is not installed.") from exc
+
+    context = submission_context(bundle_id, prolific_pid)
+    table_name = context["response_table_name"]
+    columns = response_table_columns()
+    enriched_rows = enrich_rows_for_submission(rows, context, scene_slot)
+    values = [[row.get(column) for column in columns] for row in enriched_rows]
+
+    response_table_schema = sql.SQL(
+        """
+        create table if not exists public.{table_name} (
+          id bigint generated by default as identity primary key,
+          created_at timestamptz not null default now(),
+          submission_id text,
+          timestamp_utc text,
+          participant_id text,
+          prolific_pid text,
+          prolific_pid_hash text,
+          bundle_id text,
+          study_id text,
+          session_id text,
+          scene_slot integer,
+          trial_id text,
+          task_label text,
+          question_id text,
+          question_text text,
+          option_label text,
+          method text,
+          display_order integer,
+          rating integer,
+          rating_label text
+        )
+        """
+    ).format(table_name=sql.Identifier(table_name))
+    insert_sql = sql.SQL("insert into public.{table_name} ({columns}) values ({placeholders})").format(
+        table_name=sql.Identifier(table_name),
+        columns=sql.SQL(", ").join(sql.Identifier(column) for column in columns),
+        placeholders=sql.SQL(", ").join(sql.Placeholder() for _ in columns),
+    )
+
+    with psycopg.connect(conninfo, connect_timeout=20) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""
+                create table if not exists public.{DEFAULT_SUBMISSIONS_TABLE} (
+                  submission_id text primary key,
+                  created_at timestamptz not null default now(),
+                  updated_at timestamptz not null default now(),
+                  bundle_id text,
+                  prolific_pid text,
+                  prolific_pid_hash text,
+                  study_id text,
+                  session_id text,
+                  response_table_name text,
+                  status text,
+                  saved_scene_count integer default 0,
+                  exit_status text
+                )
+                """
+            )
+            cur.execute(response_table_schema)
+            cur.execute(
+                sql.SQL("delete from public.{table_name} where scene_slot = %s").format(
+                    table_name=sql.Identifier(table_name)
+                ),
+                (scene_slot,),
+            )
+            cur.executemany(insert_sql, values)
+            cur.execute(
+                sql.SQL("select count(distinct scene_slot) from public.{table_name}").format(
+                    table_name=sql.Identifier(table_name)
+                )
+            )
+            saved_scene_count = int(cur.fetchone()[0])
+            cur.execute(
+                f"""
+                insert into public.{DEFAULT_SUBMISSIONS_TABLE} (
+                  submission_id,
+                  bundle_id,
+                  prolific_pid,
+                  prolific_pid_hash,
+                  study_id,
+                  session_id,
+                  response_table_name,
+                  status,
+                  saved_scene_count,
+                  updated_at
+                )
+                values (%s, %s, %s, %s, %s, %s, %s, 'in_progress', %s, now())
+                on conflict (submission_id) do update set
+                  bundle_id = excluded.bundle_id,
+                  prolific_pid = excluded.prolific_pid,
+                  prolific_pid_hash = excluded.prolific_pid_hash,
+                  study_id = excluded.study_id,
+                  session_id = excluded.session_id,
+                  response_table_name = excluded.response_table_name,
+                  status = case
+                    when public.{DEFAULT_SUBMISSIONS_TABLE}.status = 'submitted' then public.{DEFAULT_SUBMISSIONS_TABLE}.status
+                    else 'in_progress'
+                  end,
+                  saved_scene_count = excluded.saved_scene_count,
+                  updated_at = now()
+                """,
+                (
+                    context["submission_id"],
+                    context["bundle_id"],
+                    context["prolific_pid"],
+                    context["prolific_pid_hash"],
+                    context["study_id"],
+                    context["session_id"],
+                    table_name,
+                    saved_scene_count,
+                ),
+            )
+    return f"PostgreSQL table '{table_name}'"
+
+
+def update_postgres_submission_status(
+    *,
+    bundle_id: str,
+    prolific_pid: str,
+    status: str,
+    exit_status: str,
+) -> None:
+    conninfo = postgres_conninfo()
+    if not conninfo:
+        return
+    try:
+        import psycopg
+    except ImportError as exc:
+        raise RuntimeError("PostgreSQL saving is configured, but psycopg is not installed.") from exc
+
+    context = submission_context(bundle_id, prolific_pid)
+    with psycopg.connect(conninfo, connect_timeout=20) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                f"""
+                create table if not exists public.{DEFAULT_SUBMISSIONS_TABLE} (
+                  submission_id text primary key,
+                  created_at timestamptz not null default now(),
+                  updated_at timestamptz not null default now(),
+                  bundle_id text,
+                  prolific_pid text,
+                  prolific_pid_hash text,
+                  study_id text,
+                  session_id text,
+                  response_table_name text,
+                  status text,
+                  saved_scene_count integer default 0,
+                  exit_status text
+                )
+                """
+            )
+            cur.execute(
+                f"""
+                insert into public.{DEFAULT_SUBMISSIONS_TABLE} (
+                  submission_id,
+                  bundle_id,
+                  prolific_pid,
+                  prolific_pid_hash,
+                  study_id,
+                  session_id,
+                  response_table_name,
+                  status,
+                  exit_status,
+                  updated_at
+                )
+                values (%s, %s, %s, %s, %s, %s, %s, %s, %s, now())
+                on conflict (submission_id) do update set
+                  bundle_id = excluded.bundle_id,
+                  prolific_pid = excluded.prolific_pid,
+                  prolific_pid_hash = excluded.prolific_pid_hash,
+                  study_id = excluded.study_id,
+                  session_id = excluded.session_id,
+                  response_table_name = excluded.response_table_name,
+                  status = excluded.status,
+                  exit_status = excluded.exit_status,
+                  updated_at = now()
+                """,
+                (
+                    context["submission_id"],
+                    context["bundle_id"],
+                    context["prolific_pid"],
+                    context["prolific_pid_hash"],
+                    context["study_id"],
+                    context["session_id"],
+                    context["response_table_name"],
+                    status,
+                    exit_status,
+                ),
+            )
 
 
 def append_rows_to_csv(rows: list[dict[str, Any]]) -> str:
@@ -2008,12 +2327,19 @@ def init_formal_session(bundle_id: str) -> None:
     st.session_state.formal_terminal_status = None
 
 
-def save_formal_scene(scene_slot: int, rows: list[dict[str, Any]]) -> str:
+def save_formal_scene(scene_slot: int, rows: list[dict[str, Any]], *, bundle_id: str, prolific_pid: str) -> str:
     saved_scene_slots = dict(st.session_state.get("formal_saved_scene_slots", {}))
     slot_key = str(scene_slot)
     if slot_key in saved_scene_slots:
         return str(saved_scene_slots[slot_key].get("saved_to", "already saved"))
-    saved_to = append_rows(rows)
+    saved_to = append_rows_to_postgres_submission(
+        rows,
+        bundle_id=bundle_id,
+        prolific_pid=prolific_pid,
+        scene_slot=scene_slot,
+    )
+    if not saved_to:
+        saved_to = append_rows(rows)
     saved_scene_slots[slot_key] = {
         "saved_to": saved_to,
         "row_count": len(rows),
@@ -2038,8 +2364,8 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
         )
 
     if page == 0:
-        render_participant_ids(participant_id, bundle_id)
-        consent, attitude = render_formal_intro_page()
+        render_participant_ids(None, bundle_id)
+        consent, attitude, prolific_pid = render_formal_intro_page()
         if st.button("Next", type="primary", key=f"{bundle_id}_intro_next"):
             if preview_mode:
                 st.session_state.formal_page = 1
@@ -2049,10 +2375,24 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                 st.rerun()
             elif consent is None or attitude is None:
                 st.error("Please answer both questions before continuing.")
+            elif not prolific_pid:
+                st.error("Please enter your Prolific ID before continuing.")
             elif attitude == "E. I strongly dislike them and would prefer not to engage with this topic.":
+                st.session_state.formal_prolific_pid = prolific_pid
+                try:
+                    update_postgres_submission_status(
+                        bundle_id=bundle_id,
+                        prolific_pid=prolific_pid,
+                        status="exited",
+                        exit_status="against_robotics",
+                    )
+                except Exception as exc:
+                    st.error(f"Could not save exit status. Please do not continue until this is fixed: {exc}")
+                    return
                 st.session_state.formal_terminal_status = "against_robotics"
                 st.rerun()
             else:
+                st.session_state.formal_prolific_pid = prolific_pid
                 st.session_state.formal_page = 1
                 st.rerun()
         return
@@ -2076,11 +2416,26 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                 st.session_state.formal_scene_rows[scene_slot] = all_rows
                 if not preview_mode:
                     try:
-                        save_formal_scene(scene_slot, all_rows)
+                        save_formal_scene(
+                            scene_slot,
+                            all_rows,
+                            bundle_id=bundle_id,
+                            prolific_pid=participant_id,
+                        )
                     except Exception as exc:
                         st.error(f"Could not save this scene. Please do not continue until this is fixed: {exc}")
                         return
                 if attention_ok is False and not preview_mode:
+                    try:
+                        update_postgres_submission_status(
+                            bundle_id=bundle_id,
+                            prolific_pid=participant_id,
+                            status="exited",
+                            exit_status="failed_attention",
+                        )
+                    except Exception as exc:
+                        st.error(f"Could not save exit status. Please do not continue until this is fixed: {exc}")
+                        return
                     st.session_state.formal_terminal_status = "failed_attention"
                     st.rerun()
                 st.session_state.formal_page = scene_slot + 1
@@ -2102,6 +2457,16 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
         st.error("Some scenes were not saved. Please contact the researcher before submitting.")
         return
     if st.button("Submit responses", type="primary", key=f"{bundle_id}_submit"):
+        try:
+            update_postgres_submission_status(
+                bundle_id=bundle_id,
+                prolific_pid=participant_id,
+                status="submitted",
+                exit_status="submitted",
+            )
+        except Exception as exc:
+            st.error(f"Could not save completion status. Please do not continue until this is fixed: {exc}")
+            return
         st.session_state.formal_saved_to = "saved per scene"
         st.session_state.formal_terminal_status = "submitted"
         st.rerun()
