@@ -1405,6 +1405,21 @@ def postgres_conninfo() -> str | None:
     return None
 
 
+def format_database_error(exc: Exception) -> str:
+    message = str(exc)
+    hints = []
+    if "failed to resolve host" in message or "No address associated with hostname" in message:
+        hints.append(
+            "Streamlit Cloud may not be able to reach the direct Supabase host. "
+            "Use the Supabase pooler connection string instead of db.<project-ref>.supabase.co."
+        )
+    if "prepared statement" in message.lower():
+        hints.append("Use the Supabase session pooler, or keep prepared statements disabled.")
+    if hints:
+        return f"{message} Hint: {' '.join(hints)}"
+    return message
+
+
 def submission_context(bundle_id: str, assigned_id: str) -> dict[str, str]:
     prolific_pid = query_or_empty("PROLIFIC_PID")
     prolific_pid_hash = hashlib.sha256((prolific_pid or assigned_id).encode("utf-8")).hexdigest()[:12]
@@ -1525,7 +1540,7 @@ def append_rows_to_postgres_submission(
         placeholders=sql.SQL(", ").join(sql.Placeholder() for _ in columns),
     )
 
-    with psycopg.connect(conninfo, connect_timeout=20) as conn:
+    with psycopg.connect(conninfo, connect_timeout=20, prepare_threshold=None) as conn:
         with conn.cursor() as cur:
             cur.execute(
                 f"""
@@ -1657,7 +1672,7 @@ def update_postgres_submission_status(
         )
         """
     ).format(table_name=sql.Identifier(table_name))
-    with psycopg.connect(conninfo, connect_timeout=20) as conn:
+    with psycopg.connect(conninfo, connect_timeout=20, prepare_threshold=None) as conn:
         with conn.cursor() as cur:
             cur.execute(
                 f"""
@@ -2450,7 +2465,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                         exit_status="against_robotics",
                     )
                 except Exception as exc:
-                    st.error(f"Could not save exit status. Please do not continue until this is fixed: {exc}")
+                    st.error(
+                        "Could not save exit status. Please do not continue until this is fixed: "
+                        f"{format_database_error(exc)}"
+                    )
                     return
                 st.session_state.formal_terminal_status = "against_robotics"
                 st.rerun()
@@ -2464,7 +2482,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                         exit_status="started",
                     )
                 except Exception as exc:
-                    st.error(f"Could not save your study ID. Please do not continue until this is fixed: {exc}")
+                    st.error(
+                        "Could not save your study ID. Please do not continue until this is fixed: "
+                        f"{format_database_error(exc)}"
+                    )
                     return
                 st.session_state.formal_page = 1
                 st.rerun()
@@ -2496,7 +2517,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                             assigned_id=participant_id,
                         )
                     except Exception as exc:
-                        st.error(f"Could not save this scene. Please do not continue until this is fixed: {exc}")
+                        st.error(
+                            "Could not save this scene. Please do not continue until this is fixed: "
+                            f"{format_database_error(exc)}"
+                        )
                         return
                 if attention_ok is False and not preview_mode:
                     try:
@@ -2507,7 +2531,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                             exit_status="failed_attention",
                         )
                     except Exception as exc:
-                        st.error(f"Could not save exit status. Please do not continue until this is fixed: {exc}")
+                        st.error(
+                            "Could not save exit status. Please do not continue until this is fixed: "
+                            f"{format_database_error(exc)}"
+                        )
                         return
                     st.session_state.formal_terminal_status = "failed_attention"
                     st.rerun()
@@ -2538,7 +2565,10 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                 exit_status="submitted",
             )
         except Exception as exc:
-            st.error(f"Could not save completion status. Please do not continue until this is fixed: {exc}")
+            st.error(
+                "Could not save completion status. Please do not continue until this is fixed: "
+                f"{format_database_error(exc)}"
+            )
             return
         st.session_state.formal_saved_to = "saved per scene"
         st.session_state.formal_terminal_status = "submitted"
