@@ -46,25 +46,34 @@ PUBLIC_APP_URL = "https://robot-reasoning-proactive-task-navigation.streamlit.ap
 PROLIFIC_EXIT_CODES = {
     "no_consent": {
         "title": "Consent Not Provided",
-        "message": "You selected that you do not consent to participate, so the questionnaire will stop here.",
+        "message": (
+            "You selected that you do not consent to participate, so the questionnaire will stop here. "
+            "Please return to Prolific using the link below so your place can be released."
+        ),
         "code": "CJ8YVKNV",
         "url": "https://app.prolific.com/submissions/complete?cc=CJ8YVKNV",
     },
     "against_robotics": {
         "title": "Questionnaire Stopped",
-        "message": "Based on your response, this questionnaire will stop here.",
+        "message": (
+            "Based on your response, this questionnaire will stop here. "
+            "Please return to Prolific using the link below so your place can be released."
+        ),
         "code": "C1ELWANU",
         "url": "https://app.prolific.com/submissions/complete?cc=C1ELWANU",
     },
     "failed_attention": {
         "title": "Attention Check Not Passed",
-        "message": "The questionnaire will stop here because the attention check was not passed.",
+        "message": (
+            "The questionnaire will stop here because the attention check was not passed. "
+            "Please return to Prolific using the link below."
+        ),
         "code": "C1ANEHPP",
         "url": "https://app.prolific.com/submissions/complete?cc=C1ANEHPP",
     },
     "submitted": {
         "title": "Questionnaire Complete",
-        "message": "Thank you. Your questionnaire responses have been submitted.",
+        "message": "Thank you. Your questionnaire responses have been submitted. Please return to Prolific using the link below.",
         "code": "CYFJ6WHB",
         "url": "https://app.prolific.com/submissions/complete?cc=CYFJ6WHB",
     },
@@ -1019,10 +1028,14 @@ def render_intro_page(scene_count: int) -> str | None:
             "what the robot says, what it chooses to do, and where it plans to move, then rate whether "
             "those outputs look reasonable for the scene."
         )
+        st.write(
+            f"You will review {scene_count} short robot scenes. The questionnaire usually takes about "
+            "25 to 30 minutes. Please read carefully, but do not worry about finding a perfect answer."
+        )
         st.write("For each scene, you will see:")
         st.markdown(
             """
-1. Images showing the overall situation and the highlighted person-object interaction.
+1. Images from the robot's point of view, including the overall situation and the highlighted person-object interaction.
 2. Short text descriptions of what the robot thinks may be happening.
 3. Possible robot responses, reasons, and Updated Goal and Route examples.
 4. Rating and ranking questions about the robot's reasoning and navigation choices.
@@ -1161,7 +1174,7 @@ setTimeout(function() {{
     st.stop()
 
 
-def render_formal_intro_page(bundle_id: str) -> tuple[str | None, str | None, str | None]:
+def render_formal_intro_page(bundle_id: str, scene_count: int) -> tuple[str | None, str | None, str | None]:
     st.title("Robot Reasoning of Proactive Task and Navigation Decision")
     st.header("Background")
     with st.container(border=True):
@@ -1185,6 +1198,11 @@ def render_formal_intro_page(bundle_id: str) -> tuple[str | None, str | None, st
             "what the robot says, what it chooses to do, and where it plans to move, then rate whether "
             "those outputs look reasonable for the scene."
         )
+        st.write(
+            f"You will review {scene_count} short robot scenes. The questionnaire usually takes about "
+            "25 to 30 minutes. Please read carefully, but do not worry about finding a perfect answer."
+        )
+        st.write("For each scene, you will see images from the robot's point of view, as if you are looking through the robot's eyes.")
         st.write("When answering the study questions, you will see these main robot response options:")
         st.markdown(response_definitions_markdown())
 
@@ -2017,7 +2035,7 @@ def add_score_question(
     )
 
 
-def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
+def render_study_2b_decision(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q3: Which Robot Response Fits Best?")
     st.write(
         "Each robot chooses one possible response for the same scene. "
@@ -2119,9 +2137,33 @@ def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             display_order=task_display_order,
         )
 
-    st.divider()
+    return rows
+
+
+def render_study_2b_reasoning(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
     st.header("Q4: High-Level Natural Language Planning")
     show_target_hoi_scene(trial_dir)
+    summary = read_json(trial_dir / "study_2b_text_summary_refined.json").get("conditions", {})
+    method_order = [
+        ("A", "b1_vlm_without_dsg"),
+        ("B", "b2_vlm_with_dsg_neural_only"),
+        ("C", "b3_rule_based"),
+        ("D", "proposed_vlm_dsg_nesy"),
+    ]
+    options = [Option(label, method) for label, method in method_order]
+    display_options = stable_shuffle(
+        options,
+        participant_id=participant_id,
+        bundle_id=bundle_id,
+        trial_dir=trial_dir,
+        section="Q3",
+    )
+    display_order = option_display_order(display_options)
+    rows: list[dict[str, Any]] = []
+    option_bodies = {
+        label: study_2b_body(summary, method)
+        for label, method in method_order
+    }
     proposed_body = option_bodies["D"]
     st.markdown(
         f"""
@@ -2224,6 +2266,14 @@ Each robot gives a reason for its chosen response and a movement plan for how it
             display_order=display_order,
         )
     )
+    return rows
+
+
+def render_study_2b(trial_dir: Path, participant_id: str, bundle_id: str, task_label: str) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    rows.extend(render_study_2b_decision(trial_dir, participant_id, bundle_id, task_label))
+    st.divider()
+    rows.extend(render_study_2b_reasoning(trial_dir, participant_id, bundle_id, task_label))
     return rows
 
 
@@ -2360,12 +2410,14 @@ def render_attention_check(
     required_answer = ATTENTION_CHECK_PATTERN[(scene_slot - 1) % len(ATTENTION_CHECK_PATTERN)]
     required_label = required_answer.split(" ", 1)[1]
     question_text = (
-        f"To confirm that you are reading the questions carefully, please select {required_label} for this item."
+        f"THIS IS AN ATTENTION CHECK. To confirm that you are reading the questions carefully, "
+        f"please select {required_label} for this item."
     )
     st.divider()
     st.markdown(
+        f"<p><strong><span style='color:#ff4b4b;'>THIS IS AN ATTENTION CHECK.</span></strong> "
         f"To confirm that you are reading the questions carefully, please select "
-        f"**{html.escape(required_label)}** for this item.",
+        f"<strong>{html.escape(required_label)}</strong> for this item.</p>",
         unsafe_allow_html=True,
     )
     answer = st.radio(
@@ -2392,7 +2444,23 @@ def render_attention_check(
     return rows, answer == required_answer
 
 
-def render_formal_scene(
+def render_formal_scene_part_one(
+    trial_dir: Path,
+    participant_id: str,
+    bundle_id: str,
+    scene_slot: int,
+) -> list[dict[str, Any]]:
+    task_label = task_label_for(trial_dir)
+    rows: list[dict[str, Any]] = []
+    rows.extend(render_study_2a(trial_dir, participant_id, bundle_id, task_label))
+    st.divider()
+    rows.extend(render_study_1(trial_dir, participant_id, bundle_id, task_label))
+    st.divider()
+    rows.extend(render_study_2b_decision(trial_dir, participant_id, bundle_id, task_label))
+    return rows
+
+
+def render_formal_scene_part_two(
     trial_dir: Path,
     participant_id: str,
     bundle_id: str,
@@ -2400,11 +2468,9 @@ def render_formal_scene(
 ) -> tuple[list[dict[str, Any]], bool | None]:
     task_label = task_label_for(trial_dir)
     rows: list[dict[str, Any]] = []
-    rows.extend(render_study_2a(trial_dir, participant_id, bundle_id, task_label))
+    rows.extend(render_study_2b_reasoning(trial_dir, participant_id, bundle_id, task_label))
     st.divider()
-    rows.extend(render_study_1(trial_dir, participant_id, bundle_id, task_label))
-    st.divider()
-    rows.extend(render_study_2b(trial_dir, participant_id, bundle_id, task_label))
+    rows.extend(render_study_3b(trial_dir, participant_id, bundle_id, task_label))
     attention_rows, attention_ok = render_attention_check(
         trial_dir,
         participant_id,
@@ -2413,8 +2479,6 @@ def render_formal_scene(
         scene_slot,
     )
     rows.extend(attention_rows)
-    st.divider()
-    rows.extend(render_study_3b(trial_dir, participant_id, bundle_id, task_label))
     return rows, attention_ok
 
 
@@ -2423,15 +2487,24 @@ def init_formal_session(bundle_id: str) -> None:
         return
     st.session_state.formal_active_bundle = bundle_id
     st.session_state.formal_page = 0
+    st.session_state.formal_scene_part_one_rows = {}
     st.session_state.formal_scene_rows = {}
     st.session_state.formal_saved_scene_slots = {}
     st.session_state.formal_terminal_status = None
 
 
-def save_formal_scene(scene_slot: int, rows: list[dict[str, Any]], *, bundle_id: str, assigned_id: str) -> str:
+def save_formal_scene(
+    scene_slot: int,
+    rows: list[dict[str, Any]],
+    *,
+    bundle_id: str,
+    assigned_id: str,
+    stage: str = "complete",
+    allow_overwrite: bool = False,
+) -> str:
     saved_scene_slots = dict(st.session_state.get("formal_saved_scene_slots", {}))
     slot_key = str(scene_slot)
-    if slot_key in saved_scene_slots:
+    if slot_key in saved_scene_slots and not allow_overwrite:
         return str(saved_scene_slots[slot_key].get("saved_to", "already saved"))
     saved_to = append_rows_to_postgres_submission(
         rows,
@@ -2444,6 +2517,7 @@ def save_formal_scene(scene_slot: int, rows: list[dict[str, Any]], *, bundle_id:
     saved_scene_slots[slot_key] = {
         "saved_to": saved_to,
         "row_count": len(rows),
+        "stage": stage,
         "saved_at": datetime.now(timezone.utc).isoformat(),
     }
     st.session_state.formal_saved_scene_slots = saved_scene_slots
@@ -2466,7 +2540,7 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
 
     if page == 0:
         render_participant_ids(None, bundle_id)
-        consent, attitude, assigned_id = render_formal_intro_page(bundle_id)
+        consent, attitude, assigned_id = render_formal_intro_page(bundle_id, len(trial_dirs))
         if st.button("Next", type="primary", key=f"{bundle_id}_intro_next"):
             if preview_mode:
                 st.session_state.formal_page = 1
@@ -2516,19 +2590,62 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                 st.rerun()
         return
 
-    if 1 <= page <= len(trial_dirs):
-        scene_slot = page
+    total_scene_pages = len(trial_dirs) * 2
+    if 1 <= page <= total_scene_pages:
+        scene_slot = (page + 1) // 2
+        scene_step = 1 if page % 2 == 1 else 2
         trial_dir = trial_dirs[scene_slot - 1]
-        st.markdown(f"<h1>Scene {scene_slot} of {len(trial_dirs)}</h1>", unsafe_allow_html=True)
+        st.markdown(
+            f"<h1>Scene {scene_slot} of {len(trial_dirs)}: Part {scene_step} of 2</h1>",
+            unsafe_allow_html=True,
+        )
         st.write(
             "Please review this scene carefully. Imagine this is what the robot sees as it moves "
             "through the environment. The robot needs to understand what is happening and decide "
             "what it should do next."
         )
-        all_rows, attention_ok = render_formal_scene(trial_dir, participant_id, bundle_id, scene_slot)
+
+        if scene_step == 1:
+            part_one_rows = render_formal_scene_part_one(trial_dir, participant_id, bundle_id, scene_slot)
+            st.divider()
+            if st.button("Next", type="primary", key=f"{bundle_id}_scene_{scene_slot}_part_1_next"):
+                missing = [row for row in part_one_rows if row["rating"] is None]
+                if missing and not preview_mode:
+                    st.error(f"Please answer all questions on this page before continuing. Missing: {len(missing)} ratings.")
+                else:
+                    part_one_rows_by_scene = dict(st.session_state.get("formal_scene_part_one_rows", {}))
+                    part_one_rows_by_scene[scene_slot] = part_one_rows
+                    st.session_state.formal_scene_part_one_rows = part_one_rows_by_scene
+                    if not preview_mode:
+                        try:
+                            save_formal_scene(
+                                scene_slot,
+                                part_one_rows,
+                                bundle_id=bundle_id,
+                                assigned_id=participant_id,
+                                stage="q1_q3",
+                                allow_overwrite=True,
+                            )
+                        except Exception as exc:
+                            st.error(
+                                "Could not save this page. Please do not continue until this is fixed: "
+                                f"{format_database_error(exc)}"
+                            )
+                            return
+                    st.session_state.formal_page = page + 1
+                    st.rerun()
+            return
+
+        part_one_rows_by_scene = st.session_state.get("formal_scene_part_one_rows", {})
+        saved_part_one_rows = list(part_one_rows_by_scene.get(scene_slot, []))
+        if not saved_part_one_rows and not preview_mode:
+            st.error("The first page of this scene is missing. Please restart the questionnaire from your Prolific link.")
+            return
+        part_two_rows, attention_ok = render_formal_scene_part_two(trial_dir, participant_id, bundle_id, scene_slot)
+        all_rows = saved_part_one_rows + part_two_rows
         st.divider()
-        if st.button("Next", type="primary", key=f"{bundle_id}_scene_{scene_slot}_next"):
-            missing = [row for row in all_rows if row["rating"] is None]
+        if st.button("Next", type="primary", key=f"{bundle_id}_scene_{scene_slot}_part_2_next"):
+            missing = [row for row in part_two_rows if row["rating"] is None]
             if missing and not preview_mode:
                 st.error(f"Please answer all questions on this page before continuing. Missing: {len(missing)} ratings.")
             else:
@@ -2540,6 +2657,8 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                             all_rows,
                             bundle_id=bundle_id,
                             assigned_id=participant_id,
+                            stage="complete",
+                            allow_overwrite=True,
                         )
                     except Exception as exc:
                         st.error(
@@ -2563,7 +2682,7 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
                         return
                     st.session_state.formal_terminal_status = "failed_attention"
                     st.rerun()
-                st.session_state.formal_page = scene_slot + 1
+                st.session_state.formal_page = page + 1
                 st.rerun()
         return
 
@@ -2578,7 +2697,11 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
             st.success("Preview complete. No responses were saved.")
         return
     saved_scene_slots = st.session_state.get("formal_saved_scene_slots", {})
-    if len(saved_scene_slots) < len(trial_dirs):
+    complete_scene_slots = [
+        slot for slot, info in saved_scene_slots.items()
+        if str(info.get("stage", "")) == "complete"
+    ]
+    if len(complete_scene_slots) < len(trial_dirs):
         st.error("Some scenes were not saved. Please contact the researcher before submitting.")
         return
     if st.button("Submit responses", type="primary", key=f"{bundle_id}_submit"):
