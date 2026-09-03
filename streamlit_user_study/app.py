@@ -2363,12 +2363,13 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
     )
     social_answers = ranking_control(
         f"{trial_dir.name}_Q4B_4_social_appropriateness_rank",
-        "Rank the three robots by social appropriateness.",
+        "Rank the three robots by how comfortable their updated goal and route would feel.",
         display_options,
         card_label="Robot",
         question_markdown=(
-            "Rank the three robots by how well each Updated Goal and Route follows normal social expectations around people. "
-            "Choose each robot once. Rank 1 means the update best follows normal social expectations around people."
+            "Second, imagine you are the person in the scene. Which robot's updated goal and route would feel most comfortable and natural around you? "
+            "Think about whether the robot gives you enough space, avoids blocking you, and avoids cutting through what you are doing. "
+            "Choose each robot once. Rank 1 means the route that would feel most comfortable and natural around you."
         ),
     )
     rows.extend(
@@ -2378,7 +2379,7 @@ def render_study_3b(trial_dir: Path, participant_id: str, bundle_id: str, task_l
             trial_dir=trial_dir,
             task_label=task_label,
             question_id="Q4B_4_social_appropriateness_rank",
-            question_text="Rank the three robots by social appropriateness of the Updated Goal and Route.",
+            question_text="Rank the three robots by how comfortable and natural their updated goal and route would feel around you.",
             answers=social_answers,
             option_methods={o.label: o.method for o in options},
             display_order=display_order,
