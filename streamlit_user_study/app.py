@@ -251,6 +251,14 @@ def get_bundle_id() -> str:
     return ""
 
 
+def get_participant_id(bundle_id: str) -> str:
+    for name in ("participant_id", "PROLIFIC_PID", "prolific_pid"):
+        value = get_query_value(name).strip()
+        if value:
+            return value
+    return bundle_id
+
+
 def is_bundle_preview_mode() -> bool:
     value = get_query_value("preview") or get_query_value("bundle_preview")
     return value.strip().lower() in {"1", "true", "yes", "y"}
@@ -1996,12 +2004,28 @@ def init_formal_session(bundle_id: str) -> None:
     st.session_state.formal_active_bundle = bundle_id
     st.session_state.formal_page = 0
     st.session_state.formal_scene_rows = {}
+    st.session_state.formal_saved_scene_slots = {}
     st.session_state.formal_terminal_status = None
+
+
+def save_formal_scene(scene_slot: int, rows: list[dict[str, Any]]) -> str:
+    saved_scene_slots = dict(st.session_state.get("formal_saved_scene_slots", {}))
+    slot_key = str(scene_slot)
+    if slot_key in saved_scene_slots:
+        return str(saved_scene_slots[slot_key].get("saved_to", "already saved"))
+    saved_to = append_rows(rows)
+    saved_scene_slots[slot_key] = {
+        "saved_to": saved_to,
+        "row_count": len(rows),
+        "saved_at": datetime.now(timezone.utc).isoformat(),
+    }
+    st.session_state.formal_saved_scene_slots = saved_scene_slots
+    return saved_to
 
 
 def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview_mode: bool = False) -> None:
     init_formal_session(bundle_id)
-    participant_id = get_query_value("participant_id", bundle_id) or bundle_id
+    participant_id = get_participant_id(bundle_id)
     page = int(st.session_state.get("formal_page", 0))
     terminal_status = st.session_state.get("formal_terminal_status")
     if terminal_status:
@@ -2048,11 +2072,17 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
             missing = [row for row in all_rows if row["rating"] is None]
             if missing and not preview_mode:
                 st.error(f"Please answer all questions on this page before continuing. Missing: {len(missing)} ratings.")
-            elif attention_ok is False and not preview_mode:
-                st.session_state.formal_terminal_status = "failed_attention"
-                st.rerun()
             else:
                 st.session_state.formal_scene_rows[scene_slot] = all_rows
+                if not preview_mode:
+                    try:
+                        save_formal_scene(scene_slot, all_rows)
+                    except Exception as exc:
+                        st.error(f"Could not save this scene. Please do not continue until this is fixed: {exc}")
+                        return
+                if attention_ok is False and not preview_mode:
+                    st.session_state.formal_terminal_status = "failed_attention"
+                    st.rerun()
                 st.session_state.formal_page = scene_slot + 1
                 st.rerun()
         return
@@ -2063,20 +2093,16 @@ def render_participant_bundle(bundle_id: str, trial_dirs: list[Path], *, preview
     if len(stored_rows_by_scene) < len(trial_dirs):
         st.error("Some scene responses are missing. Please restart the questionnaire from your Prolific link.")
         return
-    rows: list[dict[str, Any]] = []
-    for scene_slot in range(1, len(trial_dirs) + 1):
-        rows.extend(stored_rows_by_scene.get(scene_slot, []))
     if preview_mode:
         if st.button("Finish preview", type="primary", key=f"{bundle_id}_preview_finish"):
             st.success("Preview complete. No responses were saved.")
         return
+    saved_scene_slots = st.session_state.get("formal_saved_scene_slots", {})
+    if len(saved_scene_slots) < len(trial_dirs):
+        st.error("Some scenes were not saved. Please contact the researcher before submitting.")
+        return
     if st.button("Submit responses", type="primary", key=f"{bundle_id}_submit"):
-        try:
-            saved_to = append_rows(rows)
-        except Exception as exc:
-            st.error(f"Could not save responses: {exc}")
-            return
-        st.session_state.formal_saved_to = saved_to
+        st.session_state.formal_saved_to = "saved per scene"
         st.session_state.formal_terminal_status = "submitted"
         st.rerun()
 
