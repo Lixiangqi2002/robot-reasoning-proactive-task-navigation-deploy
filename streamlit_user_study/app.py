@@ -327,7 +327,7 @@ def load_bundle_assignments() -> dict[str, list[str]]:
                 continue
             scene_dirs = [
                 (row.get(f"scene_{slot}_dir") or "").strip()
-                for slot in range(1, 6)
+                for slot in range(1, 4)
             ]
             bundles[participant_id] = [scene_dir for scene_dir in scene_dirs if scene_dir]
     return bundles
@@ -2792,9 +2792,9 @@ def main() -> None:
 
     if formal_bundle_id:
         trial_dirs = trial_dirs_for_bundle(formal_bundle_id)
-        if len(trial_dirs) != 5:
+        if len(trial_dirs) != 3:
             st.error(
-                f"Bundle {formal_bundle_id} was not found or does not contain 5 valid scenes. "
+                f"Bundle {formal_bundle_id} was not found or does not contain 3 valid scenes. "
                 "Please check the Prolific study link."
             )
             return
