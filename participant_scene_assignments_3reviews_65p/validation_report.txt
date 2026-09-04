@@ -1,0 +1,14 @@
+3-review / 65-participant assignment validation
+optimisation_cost: 0
+participants: 65
+rows: 195
+unique_scenes: 65
+scene_review_counts: {3: 65}
+participant_scene_counts: {3: 65}
+environment_slot_counts: {'hospital': 30, 'office': 117, 'warehouse': 48}
+task_slot_counts: {'assist': 39, 'avoid': 39, 'continue': 39, 'monitor': 39, 'warn': 39}
+environment_patterns: {'hospital+office+office': 17, 'hospital+office+warehouse': 13, 'office+office+warehouse': 35}
+participants_with_duplicate_task: 0
+participants_with_duplicate_exact_object: 0
+participants_with_duplicate_object_category: 0
+participants_with_duplicate_environment_object_category: 0

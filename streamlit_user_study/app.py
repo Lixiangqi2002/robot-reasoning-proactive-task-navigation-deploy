@@ -21,7 +21,7 @@ from PIL import Image
 
 APP_DIR = Path(__file__).resolve().parent
 DEFAULT_STATIC_DATA_ROOT = APP_DIR / "assets"
-ASSIGNMENT_ROOT = APP_DIR.parent / "participant_scene_assignments_6reviews"
+ASSIGNMENT_ROOT = APP_DIR.parent / "participant_scene_assignments_3reviews_65p"
 ASSIGNMENT_WIDE_CSV = ASSIGNMENT_ROOT / "participant_scene_assignment_wide.csv"
 DEFAULT_EXTERNAL_DATA_ROOT = Path("/media/selina-xiangqi/New Volume/dsg_dataset/user_study_data")
 DATA_ROOT = Path(
